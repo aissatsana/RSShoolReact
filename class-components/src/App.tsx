@@ -4,6 +4,7 @@ import { API_URL } from './constants';
 import type { AppState } from './types';
 import { Header } from './components/Header';
 import { CardList } from './components/CardList/CardList';
+import { Loader } from './components/Loader';
 
 export default class App extends Component {
   state: AppState = {
@@ -68,7 +69,11 @@ export default class App extends Component {
           onSearch={this.handleSearchClick}
         />
         <main>
-          <CardList items={this.state.results} />
+          {this.state.isLoading ? (
+            <Loader />
+          ) : (
+            <CardList items={this.state.results} />
+          )}
         </main>
       </>
     );
