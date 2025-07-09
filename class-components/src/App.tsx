@@ -2,9 +2,9 @@ import { Component, type ChangeEvent, type ReactNode } from 'react';
 import './App.css';
 import { API_URL } from './constants';
 import type { AppState } from './types';
-import Header from './components/Header/Header';
+import { Header } from './components/Header';
 
-export class App extends Component {
+export default class App extends Component {
   state: AppState = {
     inputValue: '',
     searchTerm: '',
@@ -72,5 +72,3 @@ export class App extends Component {
     );
   }
 }
-
-export default App;
