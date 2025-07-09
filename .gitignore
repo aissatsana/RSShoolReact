@@ -1,0 +1,40 @@
+# Node.js
+node_modules/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+*.swp
+
+# Cache
+.cache/
+.next/
+out/
+turbo/
+
+# Testing
+coverage/
+jest-html-reporters-*.html
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional
+*.local
