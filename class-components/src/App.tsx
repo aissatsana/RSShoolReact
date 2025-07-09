@@ -2,6 +2,7 @@ import { Component, type ChangeEvent, type ReactNode } from 'react';
 import './App.css';
 import { API_URL } from './constants';
 import type { AppState } from './types';
+import Header from './components/Header/Header';
 
 export class App extends Component {
   state: AppState = {
@@ -58,9 +59,16 @@ export class App extends Component {
 
   render(): ReactNode {
     return (
-      <main>
-        <div>there will be smth</div>
-      </main>
+      <>
+        <Header
+          inputValue={this.state.inputValue}
+          onInputChange={this.handleInputChange}
+          onSearch={this.handleSearchClick}
+        />
+        <main>
+          <div>there will be smth</div>
+        </main>
+      </>
     );
   }
 }
