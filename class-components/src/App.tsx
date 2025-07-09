@@ -1,35 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Component, type ChangeEvent, type ReactNode } from 'react';
+import './App.css';
+import { API_URL } from './constants';
+import type { AppState } from './types';
 
-function App() {
-  const [count, setCount] = useState(0)
+export class App extends Component {
+  state: AppState = {
+    inputValue: '',
+    searchTerm: '',
+    results: [],
+    isLoading: false,
+    errorMessage: '',
+  };
+  componentDidMount() {
+    const stored = localStorage.getItem('searchTerm');
+    const term = stored || '';
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    this.setState({ inputValue: term, searchTerm: term }, () => {
+      this.fetchResults(term);
+    });
+  }
+
+  fetchResults(term: string = '') {
+    this.setState({ isLoading: true, errorMessage: '' });
+    const url = term
+      ? `${API_URL}?search=${encodeURIComponent(term)}`
+      : API_URL;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        this.setState({ results: data.results, isLoading: false });
+      })
+      .catch((err) => {
+        // console.error(err);
+        this.setState({
+          isLoading: false,
+          errorMessage: 'Oops... Something went wrong, no Star Wars for today',
+        });
+      });
+  }
+
+  handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    this.setState({ inputValue: e.target.value });
+  };
+
+  handleSearchClick = (): void => {
+    const trimmed = this.state.inputValue.trim();
+
+    this.setState({ searchTerm: trimmed }, () => {
+      localStorage.setItem('searchTerm', trimmed);
+      this.fetchResults(trimmed);
+    });
+  };
+
+  render(): ReactNode {
+    return (
+      <main>
+        <div>there will be smth</div>
+      </main>
+    );
+  }
 }
 
-export default App
+export default App;
