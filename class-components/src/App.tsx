@@ -24,8 +24,8 @@ export default class App extends Component {
   fetchResults(term: string = '') {
     this.setState({ isLoading: true, errorMessage: '' });
     const url = term
-      ? `${API_URL}?search=${encodeURIComponent(term)}`
-      : API_URL;
+      ? `${API_URL}?name=${encodeURIComponent(term)}`
+      : `${API_URL}?page=1`;
 
     fetch(url)
       .then((res) => {
@@ -39,7 +39,8 @@ export default class App extends Component {
         // console.error(err);
         this.setState({
           isLoading: false,
-          errorMessage: 'Oops... Something went wrong, no Star Wars for today',
+          errorMessage:
+            'Oops... Rick is unavaliable right now, please try later',
         });
       });
   }
