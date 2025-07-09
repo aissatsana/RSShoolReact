@@ -3,6 +3,7 @@ import './App.css';
 import { API_URL } from './constants';
 import type { AppState } from './types';
 import { Header } from './components/Header';
+import { CardList } from './components/CardList/CardList';
 
 export default class App extends Component {
   state: AppState = {
@@ -67,7 +68,7 @@ export default class App extends Component {
           onSearch={this.handleSearchClick}
         />
         <main>
-          <div>there will be smth</div>
+          <CardList items={this.state.results} />
         </main>
       </>
     );
