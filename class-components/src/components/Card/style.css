@@ -1,0 +1,22 @@
+.item {
+  padding: 16px;
+  border-radius: 12px;
+  background-color: var(--light-blue-color);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  max-width: 500px;
+}
+
+.item__img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 3px solid var(--border-color);
+}
+
+.item__name {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  color: #333;
+  flex: 1;
+}

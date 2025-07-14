@@ -1,4 +1,5 @@
 import { Component, type ChangeEvent, type ReactNode } from 'react';
+import './style.css';
 
 interface SearchProps {
   value: string;
@@ -11,10 +12,18 @@ export class Search extends Component<SearchProps> {
     const { value, onChange, onSearch } = this.props;
     return (
       <>
-        <input type="text" value={value} onChange={onChange}></input>
-        <button type="button" onClick={onSearch}>
-          Search
-        </button>
+        <div className="search">
+          <input
+            type="text"
+            value={value}
+            onChange={onChange}
+            name="search"
+            className="search__input"
+          ></input>
+          <button type="button" onClick={onSearch} className="search__button">
+            Search
+          </button>
+        </div>
       </>
     );
   }

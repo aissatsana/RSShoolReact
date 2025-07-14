@@ -1,5 +1,5 @@
 import { Component, type ReactNode } from 'react';
-import './Loader.css';
+import './style.css';
 
 export class Loader extends Component {
   render(): ReactNode {

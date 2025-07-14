@@ -13,7 +13,7 @@ export class Header extends Component<HeaderProps> {
     return (
       <>
         <header>
-          <h1>Star Wars</h1>{' '}
+          <h1>Rick and Morty</h1>{' '}
           <Search
             value={inputValue}
             onChange={onInputChange}
