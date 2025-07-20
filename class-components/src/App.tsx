@@ -5,6 +5,7 @@ import type { AppState } from './types';
 import { Header } from './components/Header';
 import { CardList } from './components/CardList/CardList';
 import { Loader } from './components/Loader';
+import { ErrorButton } from './components/ErrorButton';
 
 export default class App extends Component {
   state: AppState = {
@@ -61,6 +62,10 @@ export default class App extends Component {
     });
   };
 
+  triggerError = () => {
+    throw new Error('Simulated server error!');
+  };
+
   render(): ReactNode {
     return (
       <>
@@ -75,6 +80,8 @@ export default class App extends Component {
           ) : (
             <CardList items={this.state.results} />
           )}
+
+          <ErrorButton />
         </main>
       </>
     );
