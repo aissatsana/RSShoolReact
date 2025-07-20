@@ -2,4 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running tests before push"
+exit 1
 npm run test
