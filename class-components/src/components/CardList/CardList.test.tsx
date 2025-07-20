@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CardList } from './CardList';
 import type { Character } from '../../types';
@@ -8,16 +8,12 @@ describe('CardList', () => {
     {
       id: 1,
       name: 'Rick Sanchez',
-      species: 'Human',
-      status: 'Alive',
       gender: 'Male',
       image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
     },
     {
       id: 2,
       name: '',
-      species: 'Human',
-      status: 'Alive',
       gender: '',
       image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
     },
