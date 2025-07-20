@@ -31,7 +31,7 @@ export default class App extends Component {
 
     fetch(url)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
@@ -39,7 +39,7 @@ export default class App extends Component {
         this.setState({ results: data.results, isLoading: false });
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
         this.setState({
           isLoading: false,
           errorMessage:
