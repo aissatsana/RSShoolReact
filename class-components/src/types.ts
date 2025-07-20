@@ -12,5 +12,5 @@ export interface AppState {
   searchTerm: string;
   results: Character[];
   isLoading: boolean;
-  errorMessage: string;
+  fetchError: Error | null;
 }

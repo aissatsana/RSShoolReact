@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 describe('App integration with localStorage', () => {
   const localStorageMock = (() => {
@@ -85,5 +86,83 @@ describe('App integration with localStorage', () => {
         'NewTestValue'
       );
     });
+  });
+});
+
+describe('App error and loading states', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('displays loader while fetching data', async () => {
+    vi.stubGlobal(
+      'fetch',
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => {
+            resolve(
+              new Response(JSON.stringify({ results: [] }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+              })
+            );
+          }, 300)
+        )
+    );
+
+    render(<App />);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(await screen.findByText(/no characters found/i)).toBeInTheDocument();
+    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+  });
+
+  it('shows error message on fetch failure (network error)', async () => {
+    vi.stubGlobal('fetch', () => Promise.reject(new Error('Network error')));
+
+    render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+
+    expect(
+      await screen.findByText(/something went wrong/i)
+    ).toBeInTheDocument();
+  });
+
+  it('shows error UI when ErrorBoundary catches HTTP error', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({}), {
+          status: 500,
+          statusText: 'Internal Server Error',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    );
+
+    render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+
+    expect(
+      await screen.findByText(/something went wrong/i)
+    ).toBeInTheDocument();
+  });
+
+  it('renders empty state if fetch returns no characters', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ results: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    );
+
+    render(<App />);
+    expect(await screen.findByText(/no characters found/i)).toBeInTheDocument();
   });
 });

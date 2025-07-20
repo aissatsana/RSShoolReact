@@ -13,7 +13,9 @@ export class ErrorButton extends Component<{}, State> {
 
   render() {
     if (this.state.shouldThrow) {
-      throw new Error('Simulated error from ErrorButton!');
+      throw new Error(
+        'Oops... Rick is unavaliable right now, please try later!'
+      );
     }
 
     return <button onClick={this.handleClick}>Simulate Server Error</button>;
