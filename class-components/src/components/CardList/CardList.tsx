@@ -4,7 +4,7 @@ import { Card } from '../Card';
 import './style.css';
 
 interface CardListProps {
-  items: Character[];
+  items?: Character[];
 }
 
 export class CardList extends Component<CardListProps> {
