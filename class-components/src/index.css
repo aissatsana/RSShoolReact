@@ -2,6 +2,7 @@
   --light-green-color: #f0fff9;
   --light-blue-color: #c0e3e1;
   --dark-color: #022b1a;
+  --accent-color: #20d3a7;
   --border-color: #3df2b6;
   --border-hover-color: rgba(61, 242, 182, 0.7);
   --shadow-color: rgba(3, 70, 19, 0.2);
@@ -25,6 +26,10 @@ body {
   min-height: 100vh;
   background-color: var(--light-green-color);
   color: var(--dark-color);
+}
+
+#root {
+  width: 100%;
 }
 
 h1 {

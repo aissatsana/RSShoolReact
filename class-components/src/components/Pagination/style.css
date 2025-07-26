@@ -1,3 +1,7 @@
+.pagination {
+  padding: 20px 0;
+}
+
 .pagination__list {
   list-style-type: none;
   display: flex;

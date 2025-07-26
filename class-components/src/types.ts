@@ -4,10 +4,3 @@ export interface Character {
   gender: string;
   image: string;
 }
-
-export interface AppState {
-  inputValue: string;
-  results: Character[];
-  isLoading: boolean;
-  fetchError: Error | null;
-}
