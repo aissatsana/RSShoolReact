@@ -30,6 +30,10 @@ body {
 
 #root {
   width: 100%;
+  min-height: 100vh;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
 }
 
 h1 {
