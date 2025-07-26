@@ -5,7 +5,6 @@ import type { AppState } from './types';
 import { Header } from './components/Header';
 import { CardList } from './components/CardList/CardList';
 import { Loader } from './components/Loader';
-import { ErrorButton } from './components/ErrorButton';
 
 export default class App extends Component {
   private _isMounted = false;
@@ -83,11 +82,7 @@ export default class App extends Component {
           onInputChange={this.handleInputChange}
           onSearch={this.handleSearchClick}
         />
-        <main>
-          {isLoading ? <Loader /> : <CardList items={results} />}
-
-          <ErrorButton />
-        </main>
+        <main>{isLoading ? <Loader /> : <CardList items={results} />}</main>
       </>
     );
   }
