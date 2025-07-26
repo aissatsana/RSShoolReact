@@ -7,7 +7,6 @@ export interface Character {
 
 export interface AppState {
   inputValue: string;
-  searchTerm: string;
   results: Character[];
   isLoading: boolean;
   fetchError: Error | null;

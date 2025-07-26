@@ -4,7 +4,6 @@ export const API_URL = 'https://rickandmortyapi.com/api/character/';
 
 export const INIT_STATE: AppState = {
   inputValue: '',
-  searchTerm: '',
   results: [],
   isLoading: false,
   fetchError: null,

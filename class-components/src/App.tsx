@@ -7,7 +7,6 @@ import { Loader } from './components/Loader';
 
 const App = () => {
   const [inputValue, setInputValue] = useState(INIT_STATE.inputValue);
-  const [searchTerm, setSearchTerm] = useState(INIT_STATE.searchTerm);
   const [results, setResults] = useState(INIT_STATE.results);
   const [isLoading, setIsLoading] = useState(INIT_STATE.isLoading);
   const [fetchError, setFetchError] = useState<Error | null>(
@@ -36,7 +35,6 @@ const App = () => {
   useEffect(() => {
     const stored = localStorage.getItem('searchTerm') || '';
     setInputValue(stored);
-    setSearchTerm(stored);
     fetchResults(stored);
   }, [fetchResults]);
 
@@ -46,7 +44,6 @@ const App = () => {
 
   const handleSearchClick = (): void => {
     const trimmed = inputValue.trim();
-    setSearchTerm(trimmed);
     localStorage.setItem('searchTerm', trimmed);
     fetchResults(trimmed);
   };
