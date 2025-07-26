@@ -1,89 +1,70 @@
-import { Component, type ChangeEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import './App.css';
-import { API_URL } from './constants';
-import type { AppState } from './types';
+import { API_URL, INIT_STATE } from './constants';
 import { Header } from './components/Header';
 import { CardList } from './components/CardList/CardList';
 import { Loader } from './components/Loader';
 
-export default class App extends Component {
-  private _isMounted = false;
-  state: AppState = {
-    inputValue: '',
-    searchTerm: '',
-    results: [],
-    isLoading: false,
-    fetchError: null,
-  };
+const App = () => {
+  const [inputValue, setInputValue] = useState(INIT_STATE.inputValue);
+  const [searchTerm, setSearchTerm] = useState(INIT_STATE.searchTerm);
+  const [results, setResults] = useState(INIT_STATE.results);
+  const [isLoading, setIsLoading] = useState(INIT_STATE.isLoading);
+  const [fetchError, setFetchError] = useState<Error | null>(
+    INIT_STATE.fetchError
+  );
 
-  componentDidMount() {
-    this._isMounted = true;
-    const stored = localStorage.getItem('searchTerm');
-    const term = stored || '';
+  const fetchResults = useCallback(async (term: string = '') => {
+    setIsLoading(true);
 
-    this.setState({ inputValue: term, searchTerm: term }, () => {
-      this.fetchResults(term);
-    });
-  }
+    try {
+      const url = term
+        ? `${API_URL}?name=${encodeURIComponent(term)}&page=1`
+        : `${API_URL}?page=1`;
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  fetchResults(term: string = '') {
-    this.setState({ isLoading: true });
-    const url = term
-      ? `${API_URL}?name=${encodeURIComponent(term)}&page=1`
-      : `${API_URL}?page=1`;
-
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        if (this._isMounted) {
-          this.setState({ results: data.results, isLoading: false });
-        }
-      })
-      .catch((err) => {
-        if (this._isMounted) {
-          this.setState({
-            isLoading: false,
-            fetchError: err,
-          });
-        }
-      });
-  }
-
-  handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ inputValue: e.target.value });
-  };
-
-  handleSearchClick = (): void => {
-    const trimmed = this.state.inputValue.trim();
-
-    this.setState({ searchTerm: trimmed }, () => {
-      localStorage.setItem('searchTerm', trimmed);
-      this.fetchResults(trimmed);
-    });
-  };
-
-  render(): ReactNode {
-    const { isLoading, fetchError, results, inputValue } = this.state;
-    if (fetchError) {
-      throw fetchError;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setResults(data.results);
+    } catch (err) {
+      setFetchError(err as Error);
+    } finally {
+      setIsLoading(false);
     }
+  }, []);
 
-    return (
-      <>
-        <Header
-          inputValue={inputValue}
-          onInputChange={this.handleInputChange}
-          onSearch={this.handleSearchClick}
-        />
-        <main>{isLoading ? <Loader /> : <CardList items={results} />}</main>
-      </>
-    );
+  useEffect(() => {
+    const stored = localStorage.getItem('searchTerm') || '';
+    setInputValue(stored);
+    setSearchTerm(stored);
+    fetchResults(stored);
+  }, [fetchResults]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setInputValue(e.target.value);
+  };
+
+  const handleSearchClick = (): void => {
+    const trimmed = inputValue.trim();
+    setSearchTerm(trimmed);
+    localStorage.setItem('searchTerm', trimmed);
+    fetchResults(trimmed);
+  };
+
+  if (fetchError) {
+    throw fetchError;
   }
-}
+
+  return (
+    <>
+      <Header
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onSearch={handleSearchClick}
+      />
+      <main>{isLoading ? <Loader /> : <CardList items={results} />}</main>
+    </>
+  );
+};
+
+export default App;
