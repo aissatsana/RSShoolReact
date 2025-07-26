@@ -50,6 +50,11 @@ button:hover {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
+button:disabled {
+  background-color: var(--shadow-color);
+  pointer-events: none;
+}
+
 input {
   border: 1px solid var(--border-color);
   background-color: var(--light-green-color);
