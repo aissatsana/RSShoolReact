@@ -7,9 +7,14 @@ import { API_URL, INIT_STATE } from './constants';
 import type { Character } from '../../types';
 import { Header } from '../Header';
 import { Detail } from '../Detail';
+import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 
 export const Home = () => {
-  const [inputValue, setInputValue] = useState<string>(INIT_STATE.inputValue);
+  const [inputValue, setInputValue] = useLocalStorageState<string>(
+    'searchTerm',
+    INIT_STATE.inputValue
+  );
+  const [searchValue, setSearchValue] = useState<string>(inputValue);
   const [results, setResults] = useState<Character[]>(INIT_STATE.results);
   const [isLoading, setIsLoading] = useState<boolean>(INIT_STATE.isLoading);
   const [fetchError, setFetchError] = useState<Error | null>(
@@ -18,7 +23,9 @@ export const Home = () => {
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  const [page, setPage] = useState<number>(
+    Number(searchParams.get('page')) || 1
+  );
   const detailsId = searchParams.get('detailsId')
     ? Number(searchParams.get('detailsId'))
     : undefined;
@@ -47,23 +54,23 @@ export const Home = () => {
   );
 
   useEffect(() => {
-    const stored = localStorage.getItem('searchTerm') || '';
-    setInputValue(stored);
-    fetchResults(stored, page);
-  }, [fetchResults, page]);
+    fetchResults(searchValue, page);
+  }, [fetchResults, searchValue, page]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
   };
 
   const handleSearchClick = (): void => {
-    const trimmed = inputValue.trim();
-    localStorage.setItem('searchTerm', trimmed);
-    fetchResults(trimmed, page);
+    setSearchParams({ page: '1' });
+    setPage(1);
+    setSearchValue(inputValue);
   };
 
-  const handlePageChange = (newPage: number) =>
+  const handlePageChange = (newPage: number) => {
     setSearchParams({ page: String(newPage) });
+    setPage(newPage);
+  };
 
   const handleSelect = (id: number) => {
     setSearchParams({
