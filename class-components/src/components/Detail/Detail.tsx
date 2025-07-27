@@ -21,6 +21,7 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
         return resp.json();
       })
       .then((data) => setData(data))
+      .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [id]);
 

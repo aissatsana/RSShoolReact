@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CardList } from './CardList';
 import type { Character } from '../../types';
@@ -16,7 +16,7 @@ describe('CardList', () => {
       image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
     },
   ];
-  const selectFoo = (id: number) => {};
+  const selectFoo = vi.fn();
 
   it('renders correct number of items', () => {
     render(<CardList items={characters} onSelect={selectFoo} />);
