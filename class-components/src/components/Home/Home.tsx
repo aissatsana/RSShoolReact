@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { API_URL, INIT_STATE } from './constants';
 import type { Character } from '../../types';
 import { Header } from '../Header';
+import { Detail } from '../Detail';
 
 export const Home = () => {
   const [inputValue, setInputValue] = useState<string>(INIT_STATE.inputValue);
@@ -17,13 +18,10 @@ export const Home = () => {
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState<number>(
-    Number(searchParams.get('page')) || 1
-  );
-
-  useEffect(() => {
-    setSearchParams({ page: String(page) });
-  }, [page, searchParams]);
+  const page = Number(searchParams.get('page')) || 1;
+  const detailsId = searchParams.get('detailsId')
+    ? Number(searchParams.get('detailsId'))
+    : undefined;
 
   const fetchResults = useCallback(
     async (term: string = '', pageNum: number = 1) => {
@@ -64,11 +62,26 @@ export const Home = () => {
     fetchResults(trimmed, page);
   };
 
-  const handlePageChange = (newPage: number) => setPage(newPage);
+  const handlePageChange = (newPage: number) =>
+    setSearchParams({ page: String(newPage) });
+
+  const handleSelect = (id: number) => {
+    setSearchParams({
+      page: String(page),
+      detailsId: String(id),
+    });
+  };
+
+  const handleCloseDetail = () => {
+    setSearchParams({
+      page: String(page),
+    });
+  };
 
   if (fetchError) {
     throw fetchError;
   }
+
   return (
     <>
       <Header
@@ -80,14 +93,22 @@ export const Home = () => {
         <Loader />
       ) : (
         <>
-          <CardList items={results} />
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
+          <CardList
+            items={results}
+            onSelect={handleSelect}
+            selectedId={detailsId}
           />
+          {totalPages > 1 && (
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </>
       )}
+
+      {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
     </>
   );
 };

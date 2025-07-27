@@ -5,9 +5,11 @@ import './style.css';
 
 interface CardListProps {
   items?: Character[];
+  onSelect: (id: number) => void;
+  selectedId?: number | null;
 }
 
-export const CardList: FC<CardListProps> = ({ items }) => {
+export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
   if (!items || items.length === 0) {
     return <p>No characters found</p>;
   }
@@ -15,7 +17,11 @@ export const CardList: FC<CardListProps> = ({ items }) => {
   return (
     <ul className="list">
       {items.map((item) => (
-        <li className="list__item" key={item.id}>
+        <li
+          className="list__item"
+          key={item.id}
+          onClick={() => onSelect(item.id)}
+        >
           <Card item={item} />
         </li>
       ))}

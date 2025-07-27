@@ -1,10 +1,5 @@
-import type { Character } from '../../types';
-interface AppState {
-  inputValue: string;
-  results: Character[];
-  isLoading: boolean;
-  fetchError: Error | null;
-}
+import type { AppState } from './types';
+
 export const API_URL = 'https://rickandmortyapi.com/api/character/';
 
 export const INIT_STATE: AppState = {
