@@ -1,23 +1,17 @@
 import { useState } from 'react';
 
-export function useLocalStorageState<T>(
+export function useLocalStorageState(
   key: string,
-  initialValue: T
-): [T, (value: T) => void] {
-  const [state, setState] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key);
-      return item !== null ? (JSON.parse(item) as T) : initialValue;
-    } catch {
-      return initialValue;
-    }
+  initialValue: string
+): [string, (value: string) => void] {
+  const [state, setState] = useState<string>(() => {
+    const item = localStorage.getItem(key);
+    return item !== null ? item : initialValue;
   });
 
-  function setValue(value: T) {
+  function setValue(value: string) {
     setState(value);
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+    localStorage.setItem(key, value);
   }
 
   return [state, setValue];

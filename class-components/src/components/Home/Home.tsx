@@ -10,7 +10,7 @@ import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 
 export const Home = () => {
-  const [inputValue, setInputValue] = useLocalStorageState<string>(
+  const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
   );
@@ -64,7 +64,7 @@ export const Home = () => {
   const handleSearchClick = (): void => {
     setSearchParams({ page: '1' });
     setPage(1);
-    setSearchValue(inputValue);
+    setSearchValue(inputValue.trim());
   };
 
   const handlePageChange = (newPage: number) => {
