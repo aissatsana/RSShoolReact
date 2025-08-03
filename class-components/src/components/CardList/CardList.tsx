@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 
 import type { Character } from '../../types';
 import { Card } from '../Card';
