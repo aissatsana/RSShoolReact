@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { API_URL } from '../constants';
-import type { CharacterDetail } from '../types';
+import { API_URL } from '../../../constants';
+import { type CharacterDetail } from '../../../types';
 
 interface CharacterDetailState {
   data: CharacterDetail | null;

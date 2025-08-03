@@ -8,7 +8,7 @@ import { Header } from '../Header';
 import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import { getCharacters } from '../../redux/charactersSlice';
+import { getCharacters } from '../providers/redux/charactersSlice';
 import { SelectedFlyout } from '../SelectedFlyout/SelectedFlyout';
 
 export const Home = () => {

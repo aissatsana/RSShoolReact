@@ -1,4 +1,4 @@
-import { API_URL } from '../constants';
+import { API_URL } from '../../../constants';
 
 export const fetchCharacters = async (term = '', page = 1) => {
   const url = term

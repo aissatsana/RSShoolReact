@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import {
   clearCharacterDetail,
   getCharacterById,
-} from '../../redux/characterDetailSlice';
+} from '../providers/redux/characterDetailSlice';
 
 interface DetailProps {
   id: number;

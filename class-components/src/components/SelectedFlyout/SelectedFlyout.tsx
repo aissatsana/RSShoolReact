@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import { clearSelected } from '../../redux/selectedItemsSlice';
+import type { Character } from '../../types';
+import { clearSelected } from '../providers/redux/selectedItemsSlice';
 import './style.css';
 
 export const SelectedFlyout = () => {
@@ -11,7 +12,7 @@ export const SelectedFlyout = () => {
 
   if (selectedIds.length === 0) return null;
 
-  const selectedData = characters.filter((char) =>
+  const selectedData = characters.filter((char: Character) =>
     selectedIds.includes(char.id)
   );
 
@@ -21,14 +22,14 @@ export const SelectedFlyout = () => {
 
   const handleDownload = () => {
     const headers = ['ID', 'Name', 'Details URL'];
-    const rows = selectedData.map((char) => [
+    const rows = selectedData.map((char: Character) => [
       char.id,
       char.name,
       `https://rickandmortyapi.com/character/${char.id}`,
     ]);
 
     const csvContent = [headers, ...rows]
-      .map((row) => row.map((val) => `"${val}"`).join(','))
+      .map((row) => row.map((val: number | string) => `"${val}"`).join(','))
       .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
