@@ -8,14 +8,17 @@ import { Loader } from './components/Loader';
 import { ErrorButton } from './components/ErrorButton';
 
 export default class App extends Component {
+  private _isMounted = false;
   state: AppState = {
     inputValue: '',
     searchTerm: '',
     results: [],
     isLoading: false,
-    errorMessage: '',
+    fetchError: null,
   };
+
   componentDidMount() {
+    this._isMounted = true;
     const stored = localStorage.getItem('searchTerm');
     const term = stored || '';
 
@@ -24,28 +27,33 @@ export default class App extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   fetchResults(term: string = '') {
-    this.setState({ isLoading: true, errorMessage: '' });
+    this.setState({ isLoading: true });
     const url = term
       ? `${API_URL}?name=${encodeURIComponent(term)}&page=1`
       : `${API_URL}?page=1`;
 
     fetch(url)
       .then((res) => {
-        // console.log(res);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data) => {
-        this.setState({ results: data.results, isLoading: false });
+        if (this._isMounted) {
+          this.setState({ results: data.results, isLoading: false });
+        }
       })
       .catch((err) => {
-        // console.error(err);
-        this.setState({
-          isLoading: false,
-          errorMessage:
-            'Oops... Rick is unavaliable right now, please try later',
-        });
+        if (this._isMounted) {
+          this.setState({
+            isLoading: false,
+            fetchError: err,
+          });
+        }
       });
   }
 
@@ -62,24 +70,21 @@ export default class App extends Component {
     });
   };
 
-  triggerError = () => {
-    throw new Error('Simulated server error!');
-  };
-
   render(): ReactNode {
+    const { isLoading, fetchError, results, inputValue } = this.state;
+    if (fetchError) {
+      throw fetchError;
+    }
+
     return (
       <>
         <Header
-          inputValue={this.state.inputValue}
+          inputValue={inputValue}
           onInputChange={this.handleInputChange}
           onSearch={this.handleSearchClick}
         />
         <main>
-          {this.state.isLoading ? (
-            <Loader />
-          ) : (
-            <CardList items={this.state.results} />
-          )}
+          {isLoading ? <Loader /> : <CardList items={results} />}
 
           <ErrorButton />
         </main>
