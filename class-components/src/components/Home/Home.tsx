@@ -9,6 +9,7 @@ import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import { getCharacters } from '../../redux/charactersSlice';
+import { SelectedFlyout } from '../SelectedFlyout/SelectedFlyout';
 
 export const Home = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +93,7 @@ export const Home = () => {
       )}
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
+      <SelectedFlyout />
     </>
   );
 };
