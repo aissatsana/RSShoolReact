@@ -14,9 +14,7 @@ interface DetailProps {
 
 export const Detail: FC<DetailProps> = ({ id, onClose }) => {
   const dispatch = useAppDispatch();
-  const { isLoading, data, error } = useAppSelector(
-    (state) => state.characterDetail
-  );
+  const { isLoading, data } = useAppSelector((state) => state.characterDetail);
 
   useEffect(() => {
     dispatch(getCharacterById(id));
