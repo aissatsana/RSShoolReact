@@ -2,6 +2,7 @@
   --light-green-color: #f0fff9;
   --light-blue-color: #c0e3e1;
   --dark-color: #022b1a;
+  --accent-color: #20d3a7;
   --border-color: #3df2b6;
   --border-hover-color: rgba(61, 242, 182, 0.7);
   --shadow-color: rgba(3, 70, 19, 0.2);
@@ -27,6 +28,14 @@ body {
   color: var(--dark-color);
 }
 
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -48,6 +57,11 @@ button {
 
 button:hover {
   box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+button:disabled {
+  background-color: var(--shadow-color);
+  pointer-events: none;
 }
 
 input {

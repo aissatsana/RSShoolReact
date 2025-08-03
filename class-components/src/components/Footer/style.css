@@ -1,0 +1,17 @@
+.footer {
+  border-top: 2px solid var(--dark-color);
+  padding-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: auto;
+}
+
+.footer__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer__link--active {
+  color: var(--accent-color);
+}
