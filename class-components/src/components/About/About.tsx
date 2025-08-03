@@ -8,6 +8,7 @@ export const About = () => {
         className="about__link"
         href="https://github.com/aissatsana"
         target="_blank"
+        rel="noreferrer noopener"
       >
         aissatsana
       </a>
@@ -16,6 +17,7 @@ export const About = () => {
         className="about__link"
         href="https://rs.school/courses/reactjs"
         target="_blank"
+        rel="noreferrer noopener"
       >
         RS School React course
       </a>
