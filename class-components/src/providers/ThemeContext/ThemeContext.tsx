@@ -12,18 +12,17 @@ interface ThemeContextValue {
   theme: Theme;
   toggleTheme: () => void;
 }
-
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+const DEFAULT_VALUE: ThemeContextValue = {
+  theme: 'light',
+  toggleTheme: () => {},
+};
+const ThemeContext = createContext<ThemeContextValue>(DEFAULT_VALUE);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme');
-    return saved === 'dark' ? 'dark' : 'light';
-  });
+  const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
     document.body.classList.toggle('dark-theme', theme === 'dark');
-    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () =>
@@ -37,7 +36,5 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useTheme = (): ThemeContextValue => {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
+  return useContext(ThemeContext);
 };

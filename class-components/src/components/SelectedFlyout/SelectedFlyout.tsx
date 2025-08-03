@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import type { Character } from '../../types';
-import { clearSelected } from '../providers/redux/selectedItemsSlice';
+import { clearSelected } from '../../providers/redux/selectedItemsSlice';
 import './style.css';
 
 export const SelectedFlyout = () => {

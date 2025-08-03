@@ -1,8 +1,9 @@
-import { type FC } from 'react';
+import React, { type FC } from 'react';
+
 import type { Character } from '../../types';
 import { Card } from '../Card';
 import './style.css';
-import { toggleSelected } from '../providers/redux/selectedItemsSlice';
+import { toggleSelected } from '../../providers/redux/selectedItemsSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 
 interface CardListProps {

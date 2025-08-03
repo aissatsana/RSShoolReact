@@ -4,11 +4,10 @@ import { Loader } from '../Loader';
 import { Pagination } from '../Pagination';
 import { useSearchParams } from 'react-router-dom';
 import { INIT_STATE } from './constants';
-import { Header } from '../Header';
 import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import { getCharacters } from '../providers/redux/charactersSlice';
+import { getCharacters } from '../../providers/redux/charactersSlice';
 import { SelectedFlyout } from '../SelectedFlyout';
 import { Search } from '../Search';
 
@@ -74,6 +73,7 @@ export const Home = () => {
         onChange={handleInputChange}
         onSearch={handleSearchClick}
       />
+
       {isLoading ? (
         <Loader />
       ) : (

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { Card } from './Card';
 import type { Character } from '../../types';
+import { vi } from 'vitest';
 
 describe('Card component', () => {
   const fullCharacter: Character = {
@@ -14,9 +15,18 @@ describe('Card component', () => {
     name: '',
     image: '',
   };
+  const mockOnClickButton = vi.fn();
+  const mockOnToggleSelect = vi.fn();
 
   it('displays character info', () => {
-    render(<Card item={fullCharacter} />);
+    render(
+      <Card
+        item={fullCharacter}
+        onClickButton={mockOnClickButton}
+        isSelected={false}
+        onToggleSelect={mockOnToggleSelect}
+      />
+    );
     expect(screen.getByText(/rick sanchez/i)).toBeInTheDocument();
     const img = screen.getByRole('img');
     expect(img).toHaveAttribute('src', fullCharacter.image);
@@ -24,7 +34,14 @@ describe('Card component', () => {
   });
 
   it('handles missing or undefined data gracefully', () => {
-    render(<Card item={partialCharacter} />);
+    render(
+      <Card
+        item={partialCharacter}
+        onClickButton={mockOnClickButton}
+        isSelected={false}
+        onToggleSelect={mockOnToggleSelect}
+      />
+    );
     expect(screen.queryByRole('img', { hidden: true })).not.toBeInTheDocument();
   });
 });

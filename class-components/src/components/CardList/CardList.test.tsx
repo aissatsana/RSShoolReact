@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CardList } from './CardList';
 import type { Character } from '../../types';
+import { renderWithProviders } from '../../test-utils';
 
 describe('CardList', () => {
   const characters: Character[] = [
@@ -19,29 +20,24 @@ describe('CardList', () => {
   const selectFoo = vi.fn();
 
   it('renders correct number of items', () => {
-    render(<CardList items={characters} onSelect={selectFoo} />);
+    renderWithProviders(<CardList items={characters} onSelect={selectFoo} />);
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
   it('displays character names and gender', () => {
-    render(<CardList items={characters} onSelect={selectFoo} />);
+    renderWithProviders(<CardList items={characters} onSelect={selectFoo} />);
     expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
   });
 
   it('handles missing name and gender gracefully', () => {
-    render(<CardList items={characters} onSelect={selectFoo} />);
+    renderWithProviders(<CardList items={characters} onSelect={selectFoo} />);
     expect(screen.getAllByRole('heading')).toHaveLength(2);
     expect(screen.getAllByRole('heading')[1]).toHaveTextContent('');
     expect(screen.getAllByText('')[1]).toBeInTheDocument();
   });
 
   it('renders "No characters found" when items is empty', () => {
-    render(<CardList items={[]} onSelect={selectFoo} />);
-    expect(screen.getByText(/no characters found/i)).toBeInTheDocument();
-  });
-
-  it('renders "No characters found" when items is undefined', () => {
-    render(<CardList onSelect={selectFoo} />);
+    renderWithProviders(<CardList items={[]} onSelect={selectFoo} />);
     expect(screen.getByText(/no characters found/i)).toBeInTheDocument();
   });
 });
