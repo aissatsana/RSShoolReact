@@ -9,7 +9,8 @@ import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import { getCharacters } from '../providers/redux/charactersSlice';
-import { SelectedFlyout } from '../SelectedFlyout/SelectedFlyout';
+import { SelectedFlyout } from '../SelectedFlyout';
+import { Search } from '../Search';
 
 export const Home = () => {
   const dispatch = useAppDispatch();
@@ -68,9 +69,11 @@ export const Home = () => {
 
   return (
     <>
-      <Header
-        inputValue={inputValue}
-        onInputChange={handleInputChange}
+      <Header />
+
+      <Search
+        value={inputValue}
+        onChange={handleInputChange}
         onSearch={handleSearchClick}
       />
       {isLoading ? (

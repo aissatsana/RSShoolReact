@@ -6,15 +6,19 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './components/providers/redux/store.ts';
+import { ThemeProvider } from './components/providers/ThemeContext/ThemeContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      </BrowserRouter>
-    </Provider>{' '}
+    <BrowserRouter>
+      <ErrorBoundary>
+        {' '}
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </ErrorBoundary>
+    </BrowserRouter>
   </StrictMode>
 );

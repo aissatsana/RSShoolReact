@@ -20,14 +20,14 @@
 }
 
 .dark-theme {
-  /* --light-color: #ffffff;
-  --light-green-color: #f0fff9;
-  --light-blue-color: #c0e3e1;
-  --dark-color: #022b1a;
-  --accent-color: #20d3a7;
-  --border-color: #3df2b6;
-  --border-hover-color: rgba(61, 242, 182, 0.7);
-  --shadow-color: rgba(3, 70, 19, 0.2); */
+  --light-color: #022b1a;
+  --light-green-color: #686e6b;
+  --light-blue-color: #657978;
+  --dark-color: #ffffff;
+  --accent-color: #689086;
+  --border-color: #2fbe8e;
+  --border-hover-color: rgba(13, 54, 40, 0.7);
+  --shadow-color: rgba(3, 70, 19, 0.2);
 }
 
 body {
