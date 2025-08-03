@@ -5,10 +5,12 @@ import { About } from './components/About';
 import { Home } from './components/Home';
 import { Footer } from './components/Footer';
 import { NotFound } from './components/NotFound';
+import { Header } from './components/Header';
 
 const App = () => {
   return (
     <>
+      <Header />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />

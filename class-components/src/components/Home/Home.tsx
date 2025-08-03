@@ -69,8 +69,6 @@ export const Home = () => {
 
   return (
     <>
-      <Header />
-
       <Search
         value={inputValue}
         onChange={handleInputChange}
