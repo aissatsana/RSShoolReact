@@ -1,5 +1,5 @@
 import { useEffect, useState, type FC } from 'react';
-import { API_URL } from '../Home/constants';
+import { API_URL } from '../../constants';
 import { Loader } from '../Loader';
 import type { CharacterDetail } from '../../types';
 import './style.css';
