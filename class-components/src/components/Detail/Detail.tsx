@@ -1,8 +1,11 @@
-import { useEffect, useState, type FC } from 'react';
-import { API_URL } from '../Home/constants';
+import { useEffect, type FC } from 'react';
 import { Loader } from '../Loader';
-import type { CharacterDetail } from '../../types';
 import './style.css';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
+import {
+  clearCharacterDetail,
+  getCharacterById,
+} from '../../providers/redux/characterDetailSlice';
 
 interface DetailProps {
   id: number;
@@ -10,26 +13,22 @@ interface DetailProps {
 }
 
 export const Detail: FC<DetailProps> = ({ id, onClose }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<CharacterDetail | null>(null);
+  const dispatch = useAppDispatch();
+  const { isLoading, data } = useAppSelector((state) => state.characterDetail);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`${API_URL}/${id}`)
-      .then((resp) => {
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        return resp.json();
-      })
-      .then((data) => setData(data))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
+    dispatch(getCharacterById(id));
+
+    return () => {
+      dispatch(clearCharacterDetail());
+    };
   }, [id]);
 
   return (
     <div className="detail">
       <div className="detail__content">
         <button className="detail__close" onClick={onClose}></button>
-        {loading ? (
+        {isLoading ? (
           <Loader />
         ) : data ? (
           <>

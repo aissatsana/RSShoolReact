@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { Detail } from './Detail';
-import { ErrorBoundary } from '../ErrorBoundary';
+import { renderWithProviders } from '../../test-utils';
 
 const mockCharacter = {
   id: 1,
@@ -27,11 +27,7 @@ describe('Detail component', () => {
       })
     );
 
-    render(
-      <ErrorBoundary>
-        <Detail id={1} onClose={vi.fn()} />
-      </ErrorBoundary>
-    );
+    renderWithProviders(<Detail id={1} onClose={vi.fn()} />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
@@ -53,11 +49,7 @@ describe('Detail component', () => {
       })
     );
 
-    render(
-      <ErrorBoundary>
-        <Detail id={1} onClose={vi.fn()} />
-      </ErrorBoundary>
-    );
+    renderWithProviders(<Detail id={1} onClose={vi.fn()} />);
 
     await waitFor(() =>
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
@@ -74,11 +66,7 @@ describe('Detail component', () => {
     );
 
     const onClose = vi.fn();
-    render(
-      <ErrorBoundary>
-        <Detail id={1} onClose={onClose} />
-      </ErrorBoundary>
-    );
+    renderWithProviders(<Detail id={1} onClose={onClose} />);
     await screen.findByText(/Rick Sanchez/i);
 
     fireEvent.click(screen.getByRole('button'));

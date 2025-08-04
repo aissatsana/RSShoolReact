@@ -1,27 +1,27 @@
-import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { CardList } from '../CardList/CardList';
 import { Loader } from '../Loader';
 import { Pagination } from '../Pagination';
 import { useSearchParams } from 'react-router-dom';
-import { API_URL, INIT_STATE } from './constants';
-import type { Character } from '../../types';
-import { Header } from '../Header';
+import { INIT_STATE } from './constants';
 import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
+import { getCharacters } from '../../providers/redux/charactersSlice';
+import { SelectedFlyout } from '../SelectedFlyout';
+import { Search } from '../Search';
 
 export const Home = () => {
+  const dispatch = useAppDispatch();
+  const { results, isLoading, fetchError, totalPages } = useAppSelector(
+    (state) => state.characters
+  );
+
   const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
   );
   const [searchValue, setSearchValue] = useState<string>(inputValue);
-  const [results, setResults] = useState<Character[]>(INIT_STATE.results);
-  const [isLoading, setIsLoading] = useState<boolean>(INIT_STATE.isLoading);
-  const [fetchError, setFetchError] = useState<Error | null>(
-    INIT_STATE.fetchError
-  );
-
-  const [totalPages, setTotalPages] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState<number>(
     Number(searchParams.get('page')) || 1
@@ -30,32 +30,9 @@ export const Home = () => {
     ? Number(searchParams.get('detailsId'))
     : undefined;
 
-  const fetchResults = useCallback(
-    async (term: string = '', pageNum: number = 1) => {
-      setIsLoading(true);
-
-      try {
-        const url = term
-          ? `${API_URL}?name=${encodeURIComponent(term)}&page=${pageNum}`
-          : `${API_URL}?page=${pageNum}`;
-
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setResults(data.results);
-        setTotalPages(data.info.pages);
-      } catch (err) {
-        setFetchError(err instanceof Error ? err : new Error(String(err)));
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
-
   useEffect(() => {
-    fetchResults(searchValue, page);
-  }, [fetchResults, searchValue, page]);
+    dispatch(getCharacters({ term: searchValue, page }));
+  }, [searchValue, page]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
@@ -91,11 +68,12 @@ export const Home = () => {
 
   return (
     <>
-      <Header
-        inputValue={inputValue}
-        onInputChange={handleInputChange}
+      <Search
+        value={inputValue}
+        onChange={handleInputChange}
         onSearch={handleSearchClick}
       />
+
       {isLoading ? (
         <Loader />
       ) : (
@@ -116,6 +94,7 @@ export const Home = () => {
       )}
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
+      <SelectedFlyout />
     </>
   );
 };

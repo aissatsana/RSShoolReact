@@ -10,6 +10,7 @@
   background-color: #ffffff;
   color: var(--dark-color);
   background-color: var(--shadow-color);
+  z-index: 20;
 }
 
 .detail__content {

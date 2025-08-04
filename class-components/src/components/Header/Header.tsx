@@ -1,19 +1,9 @@
-import { type FC } from 'react';
-import { Search } from '../Search';
+import { ThemeToggle } from '../ThemeToggle';
+import './style.css';
 
-interface HeaderProps {
-  inputValue: string;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearch: () => void;
-}
-
-export const Header: FC<HeaderProps> = ({
-  inputValue,
-  onInputChange,
-  onSearch,
-}) => (
-  <header>
-    <h1>Rick and Morty</h1>{' '}
-    <Search value={inputValue} onChange={onInputChange} onSearch={onSearch} />
+export const Header = () => (
+  <header className="header">
+    <h1>Rick and Morty</h1>
+    <ThemeToggle />
   </header>
 );

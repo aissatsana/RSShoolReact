@@ -1,7 +1,10 @@
 import { type FC } from 'react';
+
 import type { Character } from '../../types';
 import { Card } from '../Card';
 import './style.css';
+import { toggleSelected } from '../../providers/redux/selectedItemsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 
 interface CardListProps {
   items?: Character[];
@@ -10,6 +13,19 @@ interface CardListProps {
 }
 
 export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
+  const dispatch = useAppDispatch();
+  const selectedIds = useAppSelector(
+    (state) => state.selectedItems.selectedIds
+  );
+
+  const handleToggleSelect = (id: number) => {
+    dispatch(toggleSelected(id));
+  };
+
+  const handleButtonClick = (id: number) => {
+    onSelect(id);
+  };
+
   if (!items || items.length === 0) {
     return <p>No characters found</p>;
   }
@@ -17,12 +33,13 @@ export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
   return (
     <ul className="list">
       {items.map((item) => (
-        <li
-          className="list__item"
-          key={item.id}
-          onClick={() => onSelect(item.id)}
-        >
-          <Card item={item} />
+        <li className="list__item" key={item.id}>
+          <Card
+            item={item}
+            onClickButton={handleButtonClick}
+            isSelected={selectedIds.includes(item.id)}
+            onToggleSelect={handleToggleSelect}
+          />
         </li>
       ))}
     </ul>
