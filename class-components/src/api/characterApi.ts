@@ -12,7 +12,7 @@ export const characterApi = baseApi.injectEndpoints({
         params.set('page', String(page));
         if (arg?.name) params.set('name', arg.name);
         const qs = params.toString();
-        return `/character${qs ? `?${qs}` : ''}`;
+        return `/${qs ? `?${qs}` : ''}`;
       },
       providesTags: (result) =>
         result?.results
@@ -27,7 +27,7 @@ export const characterApi = baseApi.injectEndpoints({
     }),
 
     getCharacterById: build.query<CharacterDetail, number>({
-      query: (id) => ({ url: `/character/${id}` }),
+      query: (id) => ({ url: `/${id}` }),
       providesTags: (_res, _err, id) => [{ type: 'Character', id }],
     }),
   }),

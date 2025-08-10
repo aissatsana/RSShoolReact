@@ -10,13 +10,9 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import { getCharacters } from '../../providers/redux/charactersSlice';
 import { SelectedFlyout } from '../SelectedFlyout';
 import { Search } from '../Search';
+import { useGetCharactersQuery } from '../../api/characterApi';
 
 export const Home = () => {
-  const dispatch = useAppDispatch();
-  const { results, isLoading, fetchError, totalPages } = useAppSelector(
-    (state) => state.characters
-  );
-
   const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
@@ -30,9 +26,14 @@ export const Home = () => {
     ? Number(searchParams.get('detailsId'))
     : undefined;
 
-  useEffect(() => {
-    dispatch(getCharacters({ term: searchValue, page }));
-  }, [searchValue, page]);
+  const listArgs = searchValue.trim()
+    ? { page, name: searchValue.trim() }
+    : { page };
+
+  const { data, isLoading, isError } = useGetCharactersQuery(listArgs);
+
+  const results = data?.results ?? [];
+  const totalPages = data?.info.pages ?? 1;
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
@@ -62,8 +63,10 @@ export const Home = () => {
     });
   };
 
-  if (fetchError) {
-    throw fetchError;
+  if (isError) {
+    //refactor for not found user
+    const err = new Error('Failed to load characters');
+    throw err;
   }
 
   return (
