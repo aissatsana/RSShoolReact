@@ -6,6 +6,7 @@ import {
   clearCharacterDetail,
   getCharacterById,
 } from '../../providers/redux/characterDetailSlice';
+import { useGetCharacterByIdQuery } from '../../api/characterApi';
 
 interface DetailProps {
   id: number;
@@ -13,16 +14,7 @@ interface DetailProps {
 }
 
 export const Detail: FC<DetailProps> = ({ id, onClose }) => {
-  const dispatch = useAppDispatch();
-  const { isLoading, data } = useAppSelector((state) => state.characterDetail);
-
-  useEffect(() => {
-    dispatch(getCharacterById(id));
-
-    return () => {
-      dispatch(clearCharacterDetail());
-    };
-  }, [id]);
+  const { data, isLoading, isError } = useGetCharacterByIdQuery(id);
 
   return (
     <div className="detail">
@@ -30,7 +22,9 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
         <button className="detail__close" onClick={onClose}></button>
         {isLoading ? (
           <Loader />
-        ) : data ? (
+        ) : isError || !data ? (
+          <p>Something went wrong, please try again later</p>
+        ) : (
           <>
             <h2 className="detail__name">{data.name}</h2>
             <img className="detail__img" src={data.image} alt={data.name} />
@@ -41,8 +35,6 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
               <li className="detail__item">{data.location.name}</li>
             </ul>
           </>
-        ) : (
-          <p>Something went wrong, please try again later</p>
         )}
       </div>
     </div>
