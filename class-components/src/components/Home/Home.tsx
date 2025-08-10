@@ -29,7 +29,6 @@ export const Home = () => {
     : { page };
 
   const { data, isLoading, isError } = useGetCharactersQuery(listArgs);
-
   const results = data?.results ?? [];
   const totalPages = data?.info.pages ?? 1;
 
@@ -91,7 +90,7 @@ export const Home = () => {
       )}
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
-      <SelectedFlyout />
+      <SelectedFlyout items={results} />
     </>
   );
 };

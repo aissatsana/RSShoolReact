@@ -3,18 +3,18 @@ import type { Character } from '../../types';
 import { clearSelected } from '../../providers/redux/selectedItemsSlice';
 import './style.css';
 
-export const SelectedFlyout = () => {
+interface SelectedFlyoutProps {
+  items: Character[];
+}
+
+export const SelectedFlyout = ({ items }: SelectedFlyoutProps) => {
   const dispatch = useAppDispatch();
   const selectedIds = useAppSelector(
     (state) => state.selectedItems.selectedIds
   );
-  const characters = useAppSelector((state) => state.characters.results);
-
   if (selectedIds.length === 0) return null;
 
-  const selectedData = characters.filter((char: Character) =>
-    selectedIds.includes(char.id)
-  );
+  const selectedData = items.filter((char) => selectedIds.includes(char.id));
 
   const handleUnselect = () => {
     dispatch(clearSelected());

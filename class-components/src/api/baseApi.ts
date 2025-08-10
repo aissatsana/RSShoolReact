@@ -8,4 +8,7 @@ export const baseApi = createApi({
   }),
   tagTypes: ['Character'],
   endpoints: () => ({}),
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
+  keepUnusedDataFor: 600,
 });
