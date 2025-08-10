@@ -1,11 +1,6 @@
-import { useEffect, type FC } from 'react';
+import { type FC } from 'react';
 import { Loader } from '../Loader';
 import './style.css';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import {
-  clearCharacterDetail,
-  getCharacterById,
-} from '../../providers/redux/characterDetailSlice';
 import { useGetCharacterByIdQuery } from '../../api/characterApi';
 
 interface DetailProps {
