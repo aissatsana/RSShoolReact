@@ -5,7 +5,7 @@ type QueryParams = { page?: number; name?: string };
 
 export const characterApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getCharacters: build.query<CharactersResponse, QueryParams | void>({
+    getCharacters: build.query<CharactersResponse, QueryParams | undefined>({
       query: (arg) => {
         const page = arg?.page ?? 1;
         const params = new URLSearchParams();
