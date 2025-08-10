@@ -63,12 +63,6 @@ export const Home = () => {
     });
   };
 
-  if (isError) {
-    //refactor for not found user
-    const err = new Error('Failed to load characters');
-    throw err;
-  }
-
   return (
     <>
       <Search
@@ -79,6 +73,8 @@ export const Home = () => {
 
       {isLoading ? (
         <Loader />
+      ) : isError ? (
+        <p>Sorry, there are no such characters</p>
       ) : (
         <>
           <CardList
