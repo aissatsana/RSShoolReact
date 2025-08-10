@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { Home } from './Home';
 import { renderWithProviders } from '../../test-utils';
+import { baseApi } from '../../api/baseApi';
 
 describe('Home integration with localStorage', () => {
   const localStorageMock = (() => {
@@ -198,5 +199,31 @@ describe('Home error and loading states', () => {
         screen.getByText(/there are no such characters/i)
       ).toBeInTheDocument()
     );
+  });
+
+  it('shows Retry on error and triggers refetch on click', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: 'fail' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: 'fail-again' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    renderWithProviders(<Home />);
+    const retryBtn = await screen.findByRole('button', { name: /retry/i });
+    expect(retryBtn).toBeInTheDocument();
+
+    fireEvent.click(retryBtn);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
   });
 });

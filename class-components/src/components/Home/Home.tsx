@@ -97,13 +97,7 @@ export const Home = () => {
 
       <button
         type="button"
-        onClick={() =>
-          dispatch(
-            characterApi.util.invalidateTags([
-              { type: 'Character', id: 'LIST' },
-            ])
-          )
-        }
+        onClick={() => dispatch(characterApi.util.invalidateTags([]))}
       >
         Refresh
       </button>
