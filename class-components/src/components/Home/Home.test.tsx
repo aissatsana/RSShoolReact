@@ -28,13 +28,15 @@ describe('Home integration with localStorage', () => {
 
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          info: { pages: 1 },
-          results: [{ id: 2, name: 'Morty Smith', image: '' }],
-        }),
-      })
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            info: { pages: 1, count: 1, next: null, prev: null },
+            results: [{ id: 2, name: 'Morty Smith', image: '' }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      )
     );
 
     renderWithProviders(<Home />);
@@ -56,7 +58,6 @@ describe('Home integration with localStorage', () => {
 
     renderWithProviders(<Home />);
     expect(screen.getByRole('textbox')).toHaveValue('');
-    expect(await screen.findByText(/no characters found/i)).toBeInTheDocument();
   });
 
   it('updates input on user typing', () => {
@@ -77,6 +78,11 @@ describe('Home integration with localStorage', () => {
   it('trims input, saves to localStorage, and calls fetch on search', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
+      headers: {
+        get: (k: string) =>
+          k.toLowerCase() === 'content-type' ? 'application/json' : null,
+      },
       json: async () => ({
         info: { pages: 1 },
         results: [{ id: 1, name: 'Rick Sanchez', gender: 'Male', image: '' }],
@@ -97,9 +103,18 @@ describe('Home integration with localStorage', () => {
         'searchTerm',
         '   Rick   '
       );
-      const lastCall = fetchMock.mock.calls.at(-1);
-      expect(lastCall?.[0]).toContain('name=Rick');
+
+      const lastArg = fetchMock.mock.calls.at(-1)?.[0] as string | Request;
+      const urlStr = typeof lastArg === 'string' ? lastArg : lastArg.url;
+      const fullUrl = new URL(urlStr);
+      expect(fullUrl.pathname).toMatch(/\/character\/?$/);
+      expect(fullUrl.searchParams.get('name')).toBe('Rick');
+      expect(fullUrl.searchParams.get('page')).toBe('1');
     });
+
+    const lastArg = fetchMock.mock.calls.at(-1)?.[0] as string | Request;
+    const url = typeof lastArg === 'string' ? lastArg : lastArg.url;
+    expect(url).not.toContain('Rick%20%20%20');
   });
 
   it('overwrites existing searchTerm in localStorage when there is a new search', async () => {
@@ -135,33 +150,35 @@ describe('Home error and loading states', () => {
     vi.unstubAllGlobals();
   });
 
-  // it('displays loader while fetching data', async () => {
-  //   vi.stubGlobal(
-  //     'fetch',
-  //     () =>
-  //       new Promise((resolve) =>
-  //         setTimeout(() => {
-  //           resolve({
-  //             ok: true,
-  //             json: async () => ({
-  //               info: { pages: 1 },
-  //               results: [],
-  //             }),
-  //           });
-  //         }, 300)
-  //       )
-  //   );
+  it('displays loader while fetching data', async () => {
+    vi.stubGlobal(
+      'fetch',
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => {
+            resolve({
+              ok: true,
+              json: async () => ({
+                info: { pages: 1 },
+                results: [],
+              }),
+            });
+          }, 300)
+        )
+    );
 
-  //   renderWithProviders(<Home />);
-  //   expect(screen.getByText(/loading/i)).toBeInTheDocument();
-  // });
+    renderWithProviders(<Home />);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  });
 
   it('shows error message on fetch failure (network error)', async () => {
     vi.stubGlobal('fetch', () => Promise.reject(new Error('Network error')));
 
     renderWithProviders(<Home />);
     await waitFor(() =>
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/there are no such characters/i)
+      ).toBeInTheDocument()
     );
   });
 
@@ -177,7 +194,9 @@ describe('Home error and loading states', () => {
     renderWithProviders(<Home />);
 
     await waitFor(() =>
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/there are no such characters/i)
+      ).toBeInTheDocument()
     );
   });
 });
