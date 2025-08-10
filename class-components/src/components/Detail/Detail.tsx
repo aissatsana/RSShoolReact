@@ -9,7 +9,7 @@ interface DetailProps {
 }
 
 export const Detail: FC<DetailProps> = ({ id, onClose }) => {
-  const { data, isLoading, isError } = useGetCharacterByIdQuery(id);
+  const { data, isLoading, isError, refetch } = useGetCharacterByIdQuery(id);
 
   return (
     <div className="detail">
@@ -18,7 +18,10 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
         {isLoading ? (
           <Loader />
         ) : isError || !data ? (
-          <p>Something went wrong, please try again later</p>
+          <>
+            <p>Something went wrong, please try again later</p>
+            <button onClick={() => refetch()}>Retry</button>
+          </>
         ) : (
           <>
             <h2 className="detail__name">{data.name}</h2>

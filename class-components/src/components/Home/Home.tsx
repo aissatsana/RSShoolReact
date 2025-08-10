@@ -8,7 +8,8 @@ import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { SelectedFlyout } from '../SelectedFlyout';
 import { Search } from '../Search';
-import { useGetCharactersQuery } from '../../api/characterApi';
+import { characterApi, useGetCharactersQuery } from '../../api/characterApi';
+import { useAppDispatch } from '../../hooks/reduxHook';
 
 export const Home = () => {
   const [inputValue, setInputValue] = useLocalStorageState(
@@ -28,9 +29,11 @@ export const Home = () => {
     ? { page, name: searchValue.trim() }
     : { page };
 
-  const { data, isLoading, isError } = useGetCharactersQuery(listArgs);
+  const { data, isLoading, isError, refetch } = useGetCharactersQuery(listArgs);
   const results = data?.results ?? [];
   const totalPages = data?.info.pages ?? 1;
+
+  const dispatch = useAppDispatch();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
@@ -71,7 +74,10 @@ export const Home = () => {
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <p>Sorry, there are no such characters</p>
+        <>
+          <p>Sorry, there are no such characters</p>
+          <button onClick={() => refetch()}>Retry</button>
+        </>
       ) : (
         <>
           <CardList
@@ -88,6 +94,19 @@ export const Home = () => {
           )}
         </>
       )}
+
+      <button
+        type="button"
+        onClick={() =>
+          dispatch(
+            characterApi.util.invalidateTags([
+              { type: 'Character', id: 'LIST' },
+            ])
+          )
+        }
+      >
+        Refresh
+      </button>
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
       <SelectedFlyout items={results} />

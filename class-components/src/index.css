@@ -57,6 +57,13 @@ button {
   color: var(--light-green-color);
   cursor: pointer;
   transition: 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+button:has(+ button) {
+  margin-bottom: 12px;
+  display: block;
 }
 
 button:hover {

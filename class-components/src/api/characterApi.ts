@@ -12,7 +12,7 @@ export const characterApi = baseApi.injectEndpoints({
         params.set('page', String(page));
         if (arg?.name) params.set('name', arg.name);
         const qs = params.toString();
-        return `/${qs ? `?${qs}` : ''}`;
+        return `${qs ? `?${qs}` : ''}`;
       },
       providesTags: (result) =>
         result?.results
