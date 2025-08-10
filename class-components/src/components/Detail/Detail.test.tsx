@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { Detail } from './Detail';
 import { renderWithProviders } from '../../test-utils';
-import { characterApi } from '../../api/characterApi';
 
 const mockCharacter = {
   id: 1,

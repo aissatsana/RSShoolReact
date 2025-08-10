@@ -1,9 +1,7 @@
-// src/components/SelectedFlyout/SelectedFlyout.test.tsx
 import { describe, it, expect } from 'vitest';
 import { fireEvent, screen } from '@testing-library/react';
 import { SelectedFlyout } from './SelectedFlyout';
 import { renderWithProviders } from '../../test-utils';
-import { setSelected } from '../../providers/redux/selectedItemsSlice';
 
 const items = [
   { id: 1, name: 'Rick', image: '' },

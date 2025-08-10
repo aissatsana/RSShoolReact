@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { Home } from './Home';
 import { renderWithProviders } from '../../test-utils';
-import { baseApi } from '../../api/baseApi';
 
 describe('Home integration with localStorage', () => {
   const localStorageMock = (() => {
