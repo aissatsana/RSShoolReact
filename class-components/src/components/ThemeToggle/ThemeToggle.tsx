@@ -1,3 +1,5 @@
+'use client';
+
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useTheme } from '../../providers/ThemeContext/ThemeContext';
 
