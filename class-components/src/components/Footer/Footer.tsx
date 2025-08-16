@@ -1,25 +1,22 @@
-import { NavLink } from 'react-router-dom';
-import './style.css';
+'use client';
 
-export const Footer = () => {
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import styles from './Footer.module.css';
+
+export function Footer() {
+  const pathname = usePathname();
+  const linkCls = (href: string) =>
+    `${styles.link}${pathname === href ? ` ${styles.linkActive}` : ''}`;
+
   return (
-    <footer className="footer">
-      <NavLink
-        className={({ isActive }) =>
-          `footer__link${isActive ? ' footer__link--active' : ''}`
-        }
-        to="/"
-      >
+    <footer className={styles.footer}>
+      <Link href="/" className={linkCls('/')}>
         Home
-      </NavLink>
-      <NavLink
-        to="/about"
-        className={({ isActive }) =>
-          `footer__link${isActive ? ' footer__link--active' : ''}`
-        }
-      >
+      </Link>
+      <Link href="/about" className={linkCls('/about')}>
         About app
-      </NavLink>
+      </Link>
     </footer>
   );
-};
+}
