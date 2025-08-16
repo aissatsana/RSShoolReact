@@ -1,4 +1,8 @@
 import type { Metadata } from 'next';
+import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
+import '../index.css';
+import ClientProviders from '../providers/ClientProviders/ClientProviders';
 
 export const metadata: Metadata = {
   title: 'Rick and Morty',
@@ -13,7 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div id="root">{children}</div>
+        <ClientProviders>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ClientProviders>
       </body>
     </html>
   );

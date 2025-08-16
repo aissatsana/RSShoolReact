@@ -1,0 +1,8 @@
+.about {
+  margin: 0 auto;
+}
+
+.about__link {
+  display: block;
+  color: inherit;
+}

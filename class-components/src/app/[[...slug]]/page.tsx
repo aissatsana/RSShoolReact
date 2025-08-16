@@ -1,10 +1,7 @@
-import '../../index.css';
-import { ClientOnly } from './client';
+import { Home } from '../../components/Home';
 
-export function generateStaticParams() {
-  return [{ slug: [''] }];
-}
+export const dynamic = 'force-dynamic';
 
-export default function Page() {
-  return <ClientOnly />;
+export default async function HomePage() {
+  return <Home />;
 }
