@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { type FC } from 'react';
 import { Loader } from '../Loader';
 import { useGetCharacterByIdQuery } from '../../api/characterApi';
@@ -29,10 +30,12 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
         ) : (
           <>
             <h2 className={styles.detail__name}>{data.name}</h2>
-            <img
+            <Image
               className={styles.detail__img}
               src={data.image}
               alt={data.name}
+              width={300}
+              height={300}
             />
             <ul className={styles.detail__info}>
               <li className={styles.detail__item}>{data.gender}</li>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { type FC } from 'react';
 import type { Character } from '../../types';
 import styles from './Card.module.css';
@@ -26,7 +27,14 @@ export const Card: FC<CardProps> = ({
         onChange={() => onToggleSelect(item.id)}
       />
       <h3 className={styles.item__name}>{item.name}</h3>
-      <img className={styles.item__img} src={item.image} alt={item.name}></img>
+
+      <Image
+        className={styles.item__img}
+        src={item.image}
+        alt={item.name}
+        width={300}
+        height={300}
+      />
       <button
         className={styles.item__button}
         type="button"
