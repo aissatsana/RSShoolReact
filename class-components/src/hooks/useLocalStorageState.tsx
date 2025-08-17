@@ -8,7 +8,9 @@ export function useLocalStorageState(
 
   useEffect(() => {
     const savedItem = localStorage.getItem(key);
-    savedItem !== null && setState(savedItem);
+    if (savedItem !== null) {
+      setState(savedItem);
+    }
   }, [key]);
 
   function setValue(value: string) {

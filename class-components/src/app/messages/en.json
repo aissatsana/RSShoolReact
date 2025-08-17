@@ -36,6 +36,7 @@
   },
   "Select": {
     "Download": "Download",
+    "Preparing": "Preparing",
     "Unselect all": "Unselect all",
     "item(s) selected": "item(s) selected"
   }
