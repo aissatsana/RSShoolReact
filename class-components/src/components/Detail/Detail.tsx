@@ -4,6 +4,7 @@ import { type FC } from 'react';
 import { Loader } from '../Loader';
 import { useGetCharacterByIdQuery } from '../../api/characterApi';
 import styles from './Detail.module.css';
+import { useTranslations } from 'next-intl';
 
 interface DetailProps {
   id: number;
@@ -11,6 +12,7 @@ interface DetailProps {
 }
 
 export const Detail: FC<DetailProps> = ({ id, onClose }) => {
+  const t = useTranslations('utils');
   const { data, isLoading, isError, refetch } = useGetCharacterByIdQuery(id);
 
   return (
@@ -21,8 +23,8 @@ export const Detail: FC<DetailProps> = ({ id, onClose }) => {
           <Loader />
         ) : isError || !data ? (
           <>
-            <p>Something went wrong, please try again later</p>
-            <button onClick={() => refetch()}>Retry</button>
+            <p>{t('Something went wrong, please try again later')}</p>
+            <button onClick={() => refetch()}>{t('Retry')}</button>
           </>
         ) : (
           <>

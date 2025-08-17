@@ -13,8 +13,10 @@ import { characterApi, useGetCharactersQuery } from '../../api/characterApi';
 import { useAppDispatch } from '../../hooks/reduxHook';
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export const Home = () => {
+  const t = useTranslations('utils');
   const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
@@ -81,8 +83,8 @@ export const Home = () => {
         <Loader />
       ) : isError ? (
         <>
-          <p>Sorry, there are no such characters</p>
-          <button onClick={() => refetch()}>Retry</button>
+          <p>{t('No characters found')}</p>
+          <button onClick={() => refetch()}>{t('Retry')}</button>
         </>
       ) : (
         <>
@@ -105,7 +107,7 @@ export const Home = () => {
         type="button"
         onClick={() => dispatch(characterApi.util.resetApiState())}
       >
-        Refresh
+        {t('Refresh')}
       </button>
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}

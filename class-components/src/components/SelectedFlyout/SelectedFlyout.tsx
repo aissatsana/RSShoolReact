@@ -2,12 +2,14 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import type { Character } from '../../types';
 import { clearSelected } from '../../providers/redux/selectedItemsSlice';
 import styles from './SelectedFlyout.module.css';
+import { useTranslations } from 'next-intl';
 
 interface SelectedFlyoutProps {
   items: Character[];
 }
 
 export const SelectedFlyout = ({ items }: SelectedFlyoutProps) => {
+  const t = useTranslations('Select');
   const dispatch = useAppDispatch();
   const selectedIds = useAppSelector(
     (state) => state.selectedItems.selectedIds
@@ -45,10 +47,12 @@ export const SelectedFlyout = ({ items }: SelectedFlyoutProps) => {
 
   return (
     <div className={styles.flyout}>
-      <div>{selectedIds.length} item(s) selected</div>
+      <div>
+        {selectedIds.length} {t('item(s) selected')}
+      </div>
       <div className={styles.flyout__buttons}>
-        <button onClick={handleUnselect}>Unselect all</button>
-        <button onClick={handleDownload}>Download</button>
+        <button onClick={handleUnselect}>{t('Unselect all')}</button>
+        <button onClick={handleDownload}>{t('Download')}</button>
       </div>
     </div>
   );

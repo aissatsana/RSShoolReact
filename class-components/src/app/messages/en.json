@@ -1,0 +1,42 @@
+{
+  "utils": {
+    "Something went wrong, please try again later": "Something went wrong, please try again later",
+    "Retry": "Retry",
+    "Refresh": "Refresh",
+    "Rick and Morty": "Rick and Morty",
+    "No characters found": "No characters found"
+  },
+  "Nav": {
+    "Home": "Home",
+    "About app": "About app"
+  },
+  "NotFound": {
+    "Oops, there is nothing, probably Rick deleted this page": "Oops, there is nothing, probably Rick deleted this page",
+    "Go home": "Go home"
+  },
+  "About": {
+    "The application was made by": "The application was made by",
+    "as part of the": "as part of the",
+    "course": "course"
+  },
+  "Card": {
+    "View info": "View info"
+  },
+  "Loader": {
+    "Loading": "Loading"
+  },
+  "Pagination": {
+    "Back": "Back",
+    "Forward": "Forward",
+    "Page": "Page",
+    "of": "of"
+  },
+  "Search": {
+    "Search": "Search"
+  },
+  "Select": {
+    "Download": "Download",
+    "Unselect all": "Unselect all",
+    "item(s) selected": "item(s) selected"
+  }
+}

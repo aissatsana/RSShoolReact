@@ -6,6 +6,7 @@ import { Card } from '../Card';
 import { toggleSelected } from '../../providers/redux/selectedItemsSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import styles from './CardList.module.css';
+import { useTranslations } from 'next-intl';
 
 interface CardListProps {
   items?: Character[];
@@ -14,6 +15,7 @@ interface CardListProps {
 }
 
 export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
+  const t = useTranslations('utils');
   const dispatch = useAppDispatch();
   const selectedIds = useAppSelector(
     (state) => state.selectedItems.selectedIds
@@ -28,7 +30,7 @@ export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
   };
 
   if (!items || items.length === 0) {
-    return <p>No characters found</p>;
+    return <p>{t('No characters found')}</p>;
   }
 
   return (

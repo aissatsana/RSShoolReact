@@ -1,13 +1,14 @@
+import { useTranslations } from 'next-intl';
 import styles from './About.module.css';
+import type { Metadata } from 'next';
 
-export const metadata = { title: 'About' };
-
-// export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'About' };
 
 export default function AboutPage() {
+  const t = useTranslations('About');
   return (
     <h3 className={styles.about}>
-      The application was made by
+      {t('The application was made by')}
       <a
         className={styles.about__link}
         href="https://github.com/aissatsana"
@@ -16,15 +17,16 @@ export default function AboutPage() {
       >
         aissatsana
       </a>
-      as part of the
+      {t('as part of the')}
       <a
         className={styles.about__link}
         href="https://rs.school/courses/reactjs"
         target="_blank"
         rel="noreferrer noopener"
       >
-        RS School React course
+        RS School React
       </a>
+      {t('course')}
     </h3>
   );
 }
