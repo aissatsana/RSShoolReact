@@ -6,7 +6,7 @@ const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   selectedItems: selectedItemsReducer,
 });
-type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;
 
 export function makeStore(preloadedState?: Partial<RootState>) {
   return configureStore({
