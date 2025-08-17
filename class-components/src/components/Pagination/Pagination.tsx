@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import './style.css';
+import styles from './Pagination.module.css';
 
 interface PaginationProps {
   page: number;
@@ -13,20 +13,20 @@ export const Pagination: FC<PaginationProps> = ({
   onPageChange,
 }) => {
   return (
-    <div className="pagination">
-      <ul className="pagination__list">
-        <li className="pagination__item">
+    <div className={styles.pagination}>
+      <ul className={styles.pagination__list}>
+        <li className={styles.pagination__item}>
           <button
-            className="pagination__button"
+            className={styles.pagination__button}
             onClick={() => onPageChange(page - 1)}
             disabled={page === 1}
           >
             Back
           </button>
         </li>
-        <li className="pagination__item">
+        <li className={styles.pagination__item}>
           <button
-            className="pagination__button"
+            className={styles.pagination__button}
             onClick={() => onPageChange(page + 1)}
             disabled={page === totalPages}
           >
@@ -34,9 +34,9 @@ export const Pagination: FC<PaginationProps> = ({
           </button>
         </li>
       </ul>
-      <span className="pagination__total">
+      <p className={styles.pagination__total}>
         Page {page} of {totalPages}
-      </span>
+      </p>
     </div>
   );
 };

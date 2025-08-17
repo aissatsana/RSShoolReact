@@ -1,8 +1,8 @@
 import { ThemeToggle } from '../ThemeToggle';
-import './style.css';
+import styles from './Header.module.css';
 
 export const Header = () => (
-  <header className="header">
+  <header className={styles.header}>
     <h1>Rick and Morty</h1>
     <ThemeToggle />
   </header>

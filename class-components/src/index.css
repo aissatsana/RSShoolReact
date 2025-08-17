@@ -41,6 +41,10 @@ body {
   color: var(--dark-color);
 }
 
+main {
+  padding: 20px 0;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;

@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import type { Character } from '../../types';
-import './style.css';
+import styles from './Card.module.css';
 
 interface CardProps {
   item: Character;
@@ -15,17 +15,17 @@ export const Card: FC<CardProps> = ({
   isSelected,
   onToggleSelect,
 }) => (
-  <div className="item" id={item.id.toString()}>
+  <div className={styles.item} id={item.id.toString()}>
     <input
-      className="item__select"
+      className={styles.item__select}
       type="checkbox"
       checked={isSelected}
       onChange={() => onToggleSelect(item.id)}
     />
-    <h3 className="item__name">{item.name}</h3>
-    <img className="item__img" src={item.image} alt={item.name}></img>
+    <h3 className={styles.item__name}>{item.name}</h3>
+    <img className={styles.item__img} src={item.image} alt={item.name}></img>
     <button
-      className="item__button"
+      className={styles.item__button}
       type="button"
       onClick={() => onClickButton(item.id)}
     >

@@ -1,8 +1,8 @@
-import './style.css';
+import styles from './Loader.module.css';
 
 export const Loader = () => (
-  <div className="loader">
-    <div className="loader__spinner"></div>
-    <p className="loader__text">Loading...</p>
+  <div className={styles.loader}>
+    <div className={styles.loader__spinner}></div>
+    <p className={styles.loader__text}>Loading...</p>
   </div>
 );

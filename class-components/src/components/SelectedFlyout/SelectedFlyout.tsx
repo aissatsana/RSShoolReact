@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
 import type { Character } from '../../types';
 import { clearSelected } from '../../providers/redux/selectedItemsSlice';
-import './style.css';
+import styles from './SelectedFlyout.module.css';
 
 interface SelectedFlyoutProps {
   items: Character[];
@@ -44,9 +44,9 @@ export const SelectedFlyout = ({ items }: SelectedFlyoutProps) => {
   };
 
   return (
-    <div className="flyout">
+    <div className={styles.flyout}>
       <div>{selectedIds.length} item(s) selected</div>
-      <div className="flyout__buttons">
+      <div className={styles.flyout__buttons}>
         <button onClick={handleUnselect}>Unselect all</button>
         <button onClick={handleDownload}>Download</button>
       </div>

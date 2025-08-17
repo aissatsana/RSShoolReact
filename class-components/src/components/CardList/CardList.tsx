@@ -1,10 +1,11 @@
-import { type FC } from 'react';
+'use client';
 
+import { type FC } from 'react';
 import type { Character } from '../../types';
 import { Card } from '../Card';
-import './style.css';
 import { toggleSelected } from '../../providers/redux/selectedItemsSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
+import styles from './CardList.module.css';
 
 interface CardListProps {
   items?: Character[];
@@ -31,9 +32,9 @@ export const CardList: FC<CardListProps> = ({ items, onSelect }) => {
   }
 
   return (
-    <ul className="list">
+    <ul className={styles.list}>
       {items.map((item) => (
-        <li className="list__item" key={item.id}>
+        <li key={item.id}>
           <Card
             item={item}
             onClickButton={handleButtonClick}
