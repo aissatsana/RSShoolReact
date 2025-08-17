@@ -1,8 +1,9 @@
+'use client';
+
 import { useState, type ChangeEvent } from 'react';
 import { CardList } from '../CardList/CardList';
 import { Loader } from '../Loader';
 import { Pagination } from '../Pagination';
-import { useSearchParams } from 'react-router-dom';
 import { INIT_STATE } from './constants';
 import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
@@ -11,16 +12,21 @@ import { Search } from '../Search';
 import { characterApi, useGetCharactersQuery } from '../../api/characterApi';
 import { useAppDispatch } from '../../hooks/reduxHook';
 
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
 export const Home = () => {
+  const t = useTranslations('utils');
   const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
   );
   const [searchValue, setSearchValue] = useState<string>(inputValue);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState<number>(
-    Number(searchParams.get('page')) || 1
-  );
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const page = Number(searchParams.get('page') || '1');
   const detailsId = searchParams.get('detailsId')
     ? Number(searchParams.get('detailsId'))
     : undefined;
@@ -35,32 +41,34 @@ export const Home = () => {
 
   const dispatch = useAppDispatch();
 
+  const setQs = (updates: Record<string, string | number | undefined>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === undefined || value === '') params.delete(key);
+      else params.set(key, String(value));
+    });
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
   };
 
   const handleSearchClick = (): void => {
-    setSearchParams({ page: '1' });
-    setPage(1);
+    setQs({ page: 1 });
     setSearchValue(inputValue.trim());
   };
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams({ page: String(newPage) });
-    setPage(newPage);
+    setQs({ page: newPage });
   };
 
   const handleSelect = (id: number) => {
-    setSearchParams({
-      page: String(page),
-      detailsId: String(id),
-    });
+    setQs({ page, detailsId: String(id) });
   };
 
   const handleCloseDetail = () => {
-    setSearchParams({
-      page: String(page),
-    });
+    setQs({ page, detailsId: undefined });
   };
 
   return (
@@ -75,8 +83,8 @@ export const Home = () => {
         <Loader />
       ) : isError ? (
         <>
-          <p>Sorry, there are no such characters</p>
-          <button onClick={() => refetch()}>Retry</button>
+          <p>{t('No characters found')}</p>
+          <button onClick={() => refetch()}>{t('Retry')}</button>
         </>
       ) : (
         <>
@@ -99,7 +107,7 @@ export const Home = () => {
         type="button"
         onClick={() => dispatch(characterApi.util.resetApiState())}
       >
-        Refresh
+        {t('Refresh')}
       </button>
 
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}

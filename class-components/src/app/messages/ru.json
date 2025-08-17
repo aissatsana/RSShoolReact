@@ -1,0 +1,44 @@
+{
+  "utils": {
+    "Something went wrong, please try again later": "Чета не так пошло, давай по новой",
+    "Retry": "Еще раз",
+    "Refresh": "Перезагруз",
+    "Rick and Morty": "Рик и Морти",
+    "No characters found": "Таких персонажей не найдено"
+  },
+  "Nav": {
+    "Home": "Главная",
+    "About app": "О проекте"
+  },
+
+  "NotFound": {
+    "Oops, there is nothing, probably Rick deleted this page": "Упс, здесь ничего нет, похоже Рик удалил эту страницу",
+    "Go home": "На главную"
+  },
+  "About": {
+    "The application was made by": "Автор приложения --",
+    "as part of the": "как часть",
+    "course": "курса"
+  },
+  "Card": {
+    "View info": "Подробнее"
+  },
+  "Loader": {
+    "Loading": "Загрузка"
+  },
+  "Pagination": {
+    "Back": "Назад",
+    "Forward": "Вперед",
+    "Page": "Страница",
+    "of": "из"
+  },
+  "Search": {
+    "Search": "Поиск"
+  },
+  "Select": {
+    "Download": "Скачать",
+    "Preparing": "Подготовка",
+    "Unselect all": "Убрать выделение",
+    "item(s) selected": "айтемов выбрано"
+  }
+}

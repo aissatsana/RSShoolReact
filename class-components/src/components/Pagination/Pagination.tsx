@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import './style.css';
+import styles from './Pagination.module.css';
+import { useTranslations } from 'next-intl';
 
 interface PaginationProps {
   page: number;
@@ -12,31 +13,32 @@ export const Pagination: FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const t = useTranslations('Pagination');
   return (
-    <div className="pagination">
-      <ul className="pagination__list">
-        <li className="pagination__item">
+    <div className={styles.pagination}>
+      <ul className={styles.pagination__list}>
+        <li className={styles.pagination__item}>
           <button
-            className="pagination__button"
+            className={styles.pagination__button}
             onClick={() => onPageChange(page - 1)}
             disabled={page === 1}
           >
-            Back
+            {t('Back')}
           </button>
         </li>
-        <li className="pagination__item">
+        <li className={styles.pagination__item}>
           <button
-            className="pagination__button"
+            className={styles.pagination__button}
             onClick={() => onPageChange(page + 1)}
             disabled={page === totalPages}
           >
-            Forward
+            {t('Forward')}
           </button>
         </li>
       </ul>
-      <span className="pagination__total">
-        Page {page} of {totalPages}
-      </span>
+      <p className={styles.pagination__total}>
+        {t('Page')} {page} {t('of')} {totalPages}
+      </p>
     </div>
   );
 };

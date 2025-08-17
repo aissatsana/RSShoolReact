@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { type FC } from 'react';
 import type { Character } from '../../types';
-import './style.css';
+import styles from './Card.module.css';
+import { useTranslations } from 'next-intl';
 
 interface CardProps {
   item: Character;
@@ -14,22 +16,32 @@ export const Card: FC<CardProps> = ({
   onClickButton,
   isSelected,
   onToggleSelect,
-}) => (
-  <div className="item" id={item.id.toString()}>
-    <input
-      className="item__select"
-      type="checkbox"
-      checked={isSelected}
-      onChange={() => onToggleSelect(item.id)}
-    />
-    <h3 className="item__name">{item.name}</h3>
-    <img className="item__img" src={item.image} alt={item.name}></img>
-    <button
-      className="item__button"
-      type="button"
-      onClick={() => onClickButton(item.id)}
-    >
-      View info
-    </button>
-  </div>
-);
+}) => {
+  const t = useTranslations('Card');
+  return (
+    <div className={styles.item} id={item.id.toString()}>
+      <input
+        className={styles.item__select}
+        type="checkbox"
+        checked={isSelected}
+        onChange={() => onToggleSelect(item.id)}
+      />
+      <h3 className={styles.item__name}>{item.name}</h3>
+
+      <Image
+        className={styles.item__img}
+        src={item.image}
+        alt={item.name}
+        width={300}
+        height={300}
+      />
+      <button
+        className={styles.item__button}
+        type="button"
+        onClick={() => onClickButton(item.id)}
+      >
+        {t('View info')}
+      </button>
+    </div>
+  );
+};
