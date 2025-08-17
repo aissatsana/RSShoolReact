@@ -13,18 +13,33 @@ const mockCharacter = {
   location: { name: 'Earth' },
 };
 
-describe('Detail component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+beforeEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
+describe('Detail component', () => {
   it('shows loader and then character details', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockCharacter),
-      })
+      vi.fn().mockImplementation(
+        () =>
+          new Promise<Response>((resolve) =>
+            setTimeout(() => {
+              resolve(
+                new Response(JSON.stringify(mockCharacter), {
+                  status: 200,
+                  headers: { 'Content-Type': 'application/json' },
+                })
+              );
+            }, 300)
+          )
+      )
     );
 
     renderWithProviders(<Detail id={1} onClose={vi.fn()} />);
@@ -59,10 +74,17 @@ describe('Detail component', () => {
   it('calls onClose when close button is clicked', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockCharacter),
-      })
+      vi.fn().mockImplementation(
+        () =>
+          new Promise<Response>((resolve) =>
+            resolve(
+              new Response(JSON.stringify(mockCharacter), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+              })
+            )
+          )
+      )
     );
 
     const onClose = vi.fn();
@@ -71,5 +93,31 @@ describe('Detail component', () => {
 
     fireEvent.click(screen.getByRole('button'));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('shows Retry on error and triggers refetch on click', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: 'fail' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: 'fail-again' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    renderWithProviders(<Detail id={1} onClose={vi.fn()} />);
+    const retryBtn = await screen.findByRole('button', { name: /retry/i });
+    expect(retryBtn).toBeInTheDocument();
+
+    fireEvent.click(retryBtn);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
   });
 });

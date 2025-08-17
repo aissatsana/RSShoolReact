@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { CardList } from '../CardList/CardList';
 import { Loader } from '../Loader';
 import { Pagination } from '../Pagination';
@@ -6,17 +6,12 @@ import { useSearchParams } from 'react-router-dom';
 import { INIT_STATE } from './constants';
 import { Detail } from '../Detail';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import { getCharacters } from '../../providers/redux/charactersSlice';
 import { SelectedFlyout } from '../SelectedFlyout';
 import { Search } from '../Search';
+import { characterApi, useGetCharactersQuery } from '../../api/characterApi';
+import { useAppDispatch } from '../../hooks/reduxHook';
 
 export const Home = () => {
-  const dispatch = useAppDispatch();
-  const { results, isLoading, fetchError, totalPages } = useAppSelector(
-    (state) => state.characters
-  );
-
   const [inputValue, setInputValue] = useLocalStorageState(
     'searchTerm',
     INIT_STATE.inputValue
@@ -30,9 +25,15 @@ export const Home = () => {
     ? Number(searchParams.get('detailsId'))
     : undefined;
 
-  useEffect(() => {
-    dispatch(getCharacters({ term: searchValue, page }));
-  }, [searchValue, page]);
+  const listArgs = searchValue.trim()
+    ? { page, name: searchValue.trim() }
+    : { page };
+
+  const { data, isLoading, isError, refetch } = useGetCharactersQuery(listArgs);
+  const results = data?.results ?? [];
+  const totalPages = data?.info.pages ?? 1;
+
+  const dispatch = useAppDispatch();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
@@ -62,10 +63,6 @@ export const Home = () => {
     });
   };
 
-  if (fetchError) {
-    throw fetchError;
-  }
-
   return (
     <>
       <Search
@@ -76,6 +73,11 @@ export const Home = () => {
 
       {isLoading ? (
         <Loader />
+      ) : isError ? (
+        <>
+          <p>Sorry, there are no such characters</p>
+          <button onClick={() => refetch()}>Retry</button>
+        </>
       ) : (
         <>
           <CardList
@@ -93,8 +95,15 @@ export const Home = () => {
         </>
       )}
 
+      <button
+        type="button"
+        onClick={() => dispatch(characterApi.util.resetApiState())}
+      >
+        Refresh
+      </button>
+
       {detailsId && <Detail id={detailsId} onClose={handleCloseDetail} />}
-      <SelectedFlyout />
+      <SelectedFlyout items={results} />
     </>
   );
 };

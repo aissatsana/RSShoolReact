@@ -12,6 +12,11 @@
   z-index: 15;
 }
 
+.flyout__buttons {
+  display: flex;
+  align-items: center;
+}
+
 .flyout__buttons > button {
-  margin-left: 12px;
+  margin: 0 0 0 12px;
 }

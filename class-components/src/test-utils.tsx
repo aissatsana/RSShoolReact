@@ -1,13 +1,31 @@
 import { type ReactElement } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { store } from './providers/redux/store';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from './providers/ThemeContext/ThemeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { baseApi } from './api/baseApi';
+import selectedItemsReducer from './providers/redux/selectedItemsSlice';
 
-export const renderWithProviders = (ui: ReactElement) => {
-  return render(
+const rootReducer = combineReducers({
+  [baseApi.reducerPath]: baseApi.reducer,
+  selectedItems: selectedItemsReducer,
+});
+
+type RootState = ReturnType<typeof rootReducer>;
+
+export const renderWithProviders = (
+  ui: ReactElement,
+  { preloadedState }: { preloadedState?: Partial<RootState> } = {}
+) => {
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: preloadedState,
+    middleware: (getDefault) => getDefault().concat(baseApi.middleware),
+  });
+
+  const mockApp = render(
     <MemoryRouter>
       <ErrorBoundary>
         <Provider store={store}>
@@ -16,4 +34,6 @@ export const renderWithProviders = (ui: ReactElement) => {
       </ErrorBoundary>
     </MemoryRouter>
   );
+
+  return { store, ...mockApp };
 };

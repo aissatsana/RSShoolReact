@@ -3,3 +3,7 @@
   gap: 20px;
   justify-content: center;
 }
+
+.search__button {
+  margin: 0;
+}

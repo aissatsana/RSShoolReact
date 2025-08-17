@@ -12,3 +12,15 @@ export interface CharacterDetail extends Character {
     name: string;
   };
 }
+
+export interface PageInfo {
+  count: number;
+  pages: number;
+  next: string | null;
+  prev: string | null;
+}
+
+export interface CharactersResponse {
+  info: PageInfo;
+  results: Character[];
+}
