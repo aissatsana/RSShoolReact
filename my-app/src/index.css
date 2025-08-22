@@ -13,6 +13,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body:has([role="dialog"]) {
+  overflow: hidden;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -45,9 +49,10 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  border: 2px solid #646cff;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #2c3075;
 }
 button:focus,
 button:focus-visible {
