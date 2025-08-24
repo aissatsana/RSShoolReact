@@ -1,11 +1,11 @@
 import { useRef, useState, type FC, type FormEvent } from "react";
 import styles from "./UncontrolledForm.module.css";
-import type { Country, formData, Gender } from "../../types";
+import type { Country, formData, FormProps, Gender } from "../../types";
 import { COUNTRIES, EMAIL_REGEX, IMAGE_TYPES, MAX_IMAGE_MB, PASSWORD_REGEX } from "../../constants";
-import type { FormErrors, Strength, UncontrolledFormProps } from "./types";
-import { fileToBase64, getPasswordStrength } from "./helpers";
+import type { FormErrors, Strength } from "./types";
+import { fileToBase64, getPasswordStrength } from "../../helpers";
 
-export const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSubmit }) => {
+export const UncontrolledForm: FC<FormProps> = ({ onSubmit }) => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [passwordStrength, setPasswordStrength] = useState<{ score: number; label: Strength } | null>(null);

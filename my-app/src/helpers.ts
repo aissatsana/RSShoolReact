@@ -1,5 +1,5 @@
-import { SPECIAL_REGEX } from "../../constants";
-import type { Strength } from "./types";
+import { SPECIAL_REGEX } from "./constants";
+import type { Strength } from "./components/UncontrolledForm/types";
 
 export const fileToBase64 = (file: File): Promise<string> => {
   return new Promise((res, rej) => {

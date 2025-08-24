@@ -21,7 +21,9 @@ function App() {
         <button onClick={() => setModalName("uncontrolled")}>First modal</button>
         <button onClick={() => setModalName("controlled")}>Second modal</button>
       </div>
-      {modalName && <Modal onClose={() => setModalName(null)}>{modalName === "uncontrolled" ? <UncontrolledForm onSubmit={handleFormSubmit} /> : <ControlledForm />}</Modal>}
+      {modalName && (
+        <Modal onClose={() => setModalName(null)}>{modalName === "uncontrolled" ? <UncontrolledForm onSubmit={handleFormSubmit} /> : <ControlledForm onSubmit={handleFormSubmit} />}</Modal>
+      )}
 
       {formData && <Data data={formData} />}
     </>

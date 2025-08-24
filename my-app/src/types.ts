@@ -12,3 +12,7 @@ export interface formData {
   agreement: boolean;
   file: string;
 }
+
+export type FormProps = {
+  onSubmit: ({}: formData) => void;
+};
