@@ -1,110 +1,97 @@
-import { useRef, useState, type ChangeEvent, type FC, type FormEvent } from "react";
+import { useRef, useState, type FC, type FormEvent } from "react";
 import styles from "./UncontrolledForm.module.css";
-import type { formData } from "../../types";
-import { COUNTRIES, EMAIL_REGEX, PASSWORD_REGEX } from "../../constants";
-
-interface UncontrolledFormProps {
-  onSubmit: ({}: formData) => void;
-}
-
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        res(reader.result);
-      } else {
-        rej(new Error("Unexpected result type"));
-      }
-    };
-    reader.onerror = () => rej(new Error("Failed to read file"));
-    reader.readAsDataURL(file);
-  });
-};
-
-type Strength = "weak" | "medium" | "strong";
-
-function getPasswordStrength(password: string): { score: number; label: Strength } {
-  let score = 0;
-  if (/[0-9]/.test(password)) score++;
-  if (/[a-z]/.test(password)) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-  if (password.length >= 12) score++;
-
-  if (score <= 1) return { score, label: "weak" };
-  if (score <= 3) return { score, label: "medium" };
-  return { score, label: "strong" };
-}
+import type { Country, formData, Gender } from "../../types";
+import { COUNTRIES, EMAIL_REGEX, IMAGE_TYPES, MAX_IMAGE_MB, PASSWORD_REGEX } from "../../constants";
+import type { FormErrors, Strength, UncontrolledFormProps } from "./types";
+import { fileToBase64, getPasswordStrength } from "./helpers";
 
 export const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSubmit }) => {
-  const MAX_MB = 1;
-
   const formRef = useRef<HTMLFormElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  const confirmPassRef = useRef<HTMLInputElement | null>(null);
   const [passwordStrength, setPasswordStrength] = useState<{ score: number; label: Strength } | null>(null);
 
-  const [imageBase64, setImageBase64] = useState<string | null>(null);
-  const [imageError, setImageError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleConfirmPassInput = () => {
-    const password = passwordRef.current?.value;
-    const confirmPass = confirmPassRef.current?.value;
-
-    if (password !== confirmPass) {
-      confirmPassRef.current?.setCustomValidity("Passwords should match");
-    } else {
-      confirmPassRef.current?.setCustomValidity("");
-    }
+  const validateName = (name: string) => {
+    if (!name) return "Enter name";
+    if (!/^[A-Z]/.test(name)) return "Name should start with uppercased letter";
+    return null;
   };
+
+  const validateAge = (age: number) => {
+    if (!age) return "Enter age";
+    if (!Number.isInteger(age)) return "Age should be integer number";
+    if (age < 1 || age > 99) return "Age should be from 1 to 99";
+    return null;
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email) return "Enter email";
+    if (EMAIL_REGEX.test(email)) return "Enter correct email";
+    return null;
+  };
+
+  const validatePassword = (password: string) => {
+    if (!password) return "Enter password";
+    if (!PASSWORD_REGEX.test(password)) return "Password should contain 1 number, 1 uppercased letter, 1 lowercased letter, 1 special character";
+    return null;
+  };
+
+  const validateConfirmPassword = (password: string, confirmPassword: string) => {
+    if (!password) return null;
+    if (!confirmPassword) return "Confirm password";
+    if (password !== confirmPassword) return "Passwords should match";
+    return null;
+  };
+
+  const validateGender = (gender: string) => (!gender ? "Choose one option" : undefined);
+  const validateCountry = (country: string) => (!country ? "Choose one option" : undefined);
+  const validateAgreement = (checked: boolean) => (!checked ? "The agreement is binding" : undefined);
 
   const handlePasswordInput = () => {
     const password = passwordRef.current?.value;
-
     setPasswordStrength(password ? getPasswordStrength(password) : null);
-    console.log(password);
-    if (confirmPassRef.current && confirmPassRef.current.value) {
-      handleConfirmPassInput();
-    }
   };
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setImageError(null);
-    setImageBase64(null);
-    if (!file) return;
-
-    const allowedTypes = ["image/png", "image,jpeg"];
-    if (!allowedTypes.includes(file.type)) {
-      setImageError("Only PNG and JPEG are allowed");
-      return;
-    }
-
-    const maxBytes = MAX_MB * 1024 * 1024;
-    if (file.size > maxBytes) {
-      setImageError(`Max file size is ${MAX_MB}MB`);
-      return;
-    }
-
-    try {
-      const b64 = await fileToBase64(file);
-      setImageBase64(b64);
-    } catch {
-      setImageError("Failed to read file");
-    }
+  const validateFile = async (value: File) => {
+    if (!value) return "Upload file";
+    if (!IMAGE_TYPES.includes(value.type)) return "Only PNG and JPEG are allowed";
+    if (value.size > MAX_IMAGE_MB * 1024 * 1024) return `Max file size is ${MAX_IMAGE_MB}MB`;
+    return null;
   };
 
-  const getTypedRes = async (data: FormData) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+
     const name = String(data.get("name"));
     const age = Number(data.get("age"));
     const email = String(data.get("email"));
     const password = String(data.get("password"));
-    const gender = String(data.get("gender"));
-    const country = String(data.get("country"));
+    const confirmPassword = String(data.get("password-confirm"));
+    const gender = String(data.get("gender")) as Gender;
+    const country = String(data.get("country")) as Country;
     const agreement = data.has("agreement");
+    const media = data.get("media");
 
-    return {
+    const newErrors: FormErrors = {};
+    newErrors.name = validateName(name) || "";
+    newErrors.age = validateAge(age) || "";
+    newErrors.email = validateEmail(email) || "";
+    newErrors.password = validatePassword(password) || "";
+    newErrors.passwordConfirm = validateConfirmPassword(password, confirmPassword) || "";
+    newErrors.gender = validateGender(gender) || "";
+    newErrors.country = validateCountry(country) || "";
+    newErrors.agreement = validateAgreement(agreement) || "";
+
+    const file = media instanceof File ? media : null;
+    newErrors.file = (file && (await validateFile(file))) || "";
+
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
+    const file64 = file ? await fileToBase64(file) : "";
+
+    const result: formData = {
       name,
       age,
       email,
@@ -112,89 +99,110 @@ export const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSubmit }) => {
       gender,
       country,
       agreement,
-      file64: imageBase64,
+      file: file64,
     };
-  };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const result = await getTypedRes(data);
+    onSubmit(result);
     console.log(result);
     // onSubmit(res);
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} ref={formRef}>
-      <label>
-        <input name="name" type="text" placeholder="Name" pattern="^[A-ZА-Я].*" title="Name should start with a capital letter" required></input>
-      </label>
-      <label>
-        <input name="age" type="number" placeholder="Age" min={1} required title="Age should be number, no negative values"></input>
-      </label>
-      <label>
-        <input name="email" type="text" placeholder="E-mail" pattern={EMAIL_REGEX.source} title="Enter correct e-mail"></input>
-      </label>
-
-      <div>
-        <label>
-          <input
-            ref={passwordRef}
-            name="password"
-            type="password"
-            placeholder="Password"
-            pattern={PASSWORD_REGEX.source}
-            title="Password should contain at least one number, uppercase letter, lowercase letter and special character"
-            onInput={handlePasswordInput}
-          ></input>
+      <div className={styles.wrap}>
+        <label className={styles.label}>
+          Name
+          <input className={styles.input} name="name" type="text" placeholder="Name"></input>
         </label>
-        <p>Must include: number, uppercase, lowercase, special char. Length ≥ 12 is stronger.</p>
-
-        {passwordStrength && <p>{passwordStrength.label} password</p>}
+        <p className={styles.error}>{errors.name}</p>
       </div>
-      <label>
-        <input ref={confirmPassRef} name="password-confirm" type="text" placeholder="Confirm password" onInput={handleConfirmPassInput}></input>
-      </label>
 
-      <fieldset>
+      <div className={styles.wrap}>
+        <label className={styles.label}>
+          Age
+          <input className={styles.input} name="age" type="number" placeholder="Age"></input>
+        </label>
+        <p className={styles.error}>{errors.age}</p>
+      </div>
+
+      <div className={styles.wrap}>
+        <label className={styles.label}>
+          E-mail
+          <input className={styles.input} name="email" type="text" placeholder="E-mail"></input>
+        </label>
+        <p className={styles.error}>{errors.email}</p>
+      </div>
+
+      <div className={styles.wrap}>
+        <label className={styles.label}>
+          Password
+          {passwordStrength && <span className={styles["password-hint"]}>({passwordStrength.label})</span>}
+          <input className={styles.input} ref={passwordRef} name="password" type="password" placeholder="Password" onInput={handlePasswordInput}></input>
+        </label>
+
+        <p className={styles.error}>{errors.password}</p>
+      </div>
+
+      <div className={styles.wrap}>
+        <label className={styles.label}>
+          Confrim password
+          <input className={styles.input} name="password-confirm" type="text" placeholder="Confirm password"></input>
+        </label>
+        <p className={styles.error}>{errors.passwordConfirm}</p>
+      </div>
+
+      <fieldset className={styles.fieldset}>
         <legend>Gender</legend>
-        <label>
-          Female
-          <input name="gender" value="female" type="radio" required></input>
-        </label>
-        <label>
-          Male
-          <input name="gender" value="male" type="radio"></input>
-        </label>
-        <label>
-          Other
-          <input name="gender" value="other" type="radio"></input>
-        </label>
+        <div className={styles.wrap}>
+          <label>
+            Female
+            <input name="gender" value="female" type="radio" required></input>
+          </label>
+          <label>
+            Male
+            <input name="gender" value="male" type="radio"></input>
+          </label>
+          <label>
+            Other
+            <input name="gender" value="other" type="radio"></input>
+          </label>
+          <p className={styles.error}>{errors.gender}</p>
+        </div>
       </fieldset>
 
-      <label>
-        Accept Terms and Conditions agreement
-        <input name="agreement" type="checkbox" required></input>
-      </label>
-
-      <label>
-        Upload file (only png and jpeg)
-        <input name="media" type="file" required accept="image/png, image/jpeg" onChange={handleFileChange}></input>
-        <p>{imageError ? imageError : " "}</p>
-      </label>
-
-      <select name="country" required defaultValue="">
-        <option value="" disabled>
-          Choose country
-        </option>
-        {COUNTRIES.map((c) => (
-          <option key={c} value={c}>
-            {c}
+      <div className={styles.wrap}>
+        <label htmlFor="country">Country</label>
+        <select id="country" name="country" required defaultValue="">
+          <option value="" disabled>
+            Choose country
           </option>
-        ))}
-      </select>
+          {COUNTRIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <p className={styles.error}>{errors.country}</p>
+      </div>
 
-      <button type="submit">Отправить</button>
+      <div className={styles.wrap}>
+        <label>
+          <input name="agreement" type="checkbox" required></input> <p className={styles.error}>{errors.agreement}</p>
+          Accept Terms and Conditions agreement
+        </label>
+        <p className={styles.error}>{errors.agreement}</p>
+      </div>
+
+      <div className={styles.wrap}>
+        <label>
+          Upload file (only png and jpeg)
+          <input name="media" type="file" required accept="image/png, image/jpeg"></input>
+          <p className={styles.error}>{errors.file}</p>
+        </label>
+        <p className={styles.error}>{errors.agreement}</p>
+      </div>
+
+      <button type="submit">Submit</button>
     </form>
   );
 };

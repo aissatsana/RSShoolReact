@@ -1,12 +1,14 @@
-export type Countries = "Russia" | "Slovenia";
+import type { COUNTRIES } from "./constants";
 
+export type Gender = "female" | "male" | "other";
+export type Country = (typeof COUNTRIES)[number];
 export interface formData {
   name: string;
   age: number;
   email: string;
   password: string;
-  gender: "female" | "male" | "other";
-  country: Countries;
+  gender: Gender;
+  country: Country;
   agreement: boolean;
   file: string;
 }
