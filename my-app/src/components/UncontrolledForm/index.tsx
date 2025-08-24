@@ -27,7 +27,7 @@ export const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSubmit }) => {
 
   const validateEmail = (email: string) => {
     if (!email) return "Enter email";
-    if (EMAIL_REGEX.test(email)) return "Enter correct email";
+    if (!EMAIL_REGEX.test(email)) return "Enter correct email";
     return null;
   };
 
@@ -104,6 +104,7 @@ export const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSubmit }) => {
 
     onSubmit(result);
     console.log(result);
+
     // onSubmit(res);
   };
 
