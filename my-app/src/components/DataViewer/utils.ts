@@ -7,7 +7,7 @@ export const buildCountries = (raw: Record<string, unknown>): CountryView[] => {
     if (!isCountryBlockRaw(block)) continue;
 
     const name = typeof block.country === "string" ? block.country : key;
-    const iso = typeof block.code === "string" ? block.code : undefined;
+    const iso = typeof block.iso_code === "string" ? block.iso_code : undefined;
 
     const dataArr = Array.isArray(block.data) ? block.data : [];
 
@@ -21,8 +21,8 @@ export const buildCountries = (raw: Record<string, unknown>): CountryView[] => {
       rows.push({
         year,
         population: toNumber(row.population),
-        co2: toNumber(row.co2),
-        co2_per_capita: toNumber(row.co2_per_capita),
+        co2: toNumber(row.cement_co2),
+        co2_per_capita: toNumber(row.cement_co2_per_capita),
       });
     }
 

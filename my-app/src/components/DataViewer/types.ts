@@ -1,14 +1,14 @@
 export type CountryBlockRaw = {
   country?: unknown;
-  code?: unknown;
+  iso_code?: unknown;
   data?: unknown;
 };
 
 export type YearRowRaw = {
   year?: unknown;
   population?: unknown;
-  co2?: unknown;
-  co2_per_capita?: unknown;
+  cement_co2?: unknown;
+  cement_co2_per_capita?: unknown;
 };
 
 export const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;

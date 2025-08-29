@@ -84,15 +84,6 @@ export const DataViewer = () => {
     }
   };
 
-  const PAGE = 25;
-  const [page, setPage] = useState(1);
-  useEffect(() => {
-    setPage(1);
-  }, [debounced, year]);
-
-  const slice = sorted.slice(0, page * PAGE);
-  const canMore = slice.length < sorted.length;
-
   return (
     <div className={styles.container}>
       <div className={styles.controls}>
@@ -131,12 +122,11 @@ export const DataViewer = () => {
           </tr>
         </thead>
         <tbody>
-          {slice.map((country) => (
+          {sorted.map((country) => (
             <CountryRows key={country.key} country={country} displayYear={year} />
           ))}
         </tbody>
       </table>
-      {canMore && <button onClick={() => setPage((page) => page + 1)}>Load more</button>}
     </div>
   );
 };
