@@ -115,10 +115,11 @@ export const DataViewer = () => {
       <table className={styles.table}>
         <thead>
           <tr>
+            <th>ISO Code</th>
             <th>Country name</th>
             <th>Population</th>
-            <th>ISO Code</th>
-            <th></th>
+            <th>CO₂</th>
+            <th>CO₂ per capita</th>
           </tr>
         </thead>
         <tbody>
