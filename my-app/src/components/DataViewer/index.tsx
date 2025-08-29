@@ -1,13 +1,24 @@
+import { useMemo, useState } from "react";
 import { dataResource } from "../../dataResource";
+import { CountryCard } from "../CountryCard";
+import { buildCountries } from "./utils";
 
 export const DataViewer = () => {
-  const data = dataResource.read();
-  const keys = Object.keys(data).slice(0, 5);
+  const raw = dataResource.read();
+  const countries = useMemo(() => buildCountries(raw), [raw]);
+
+  const PAGE = 25;
+  const [page, setPage] = useState(1);
+  const slice = countries.slice(0, page * PAGE);
+  const canMore = slice.length < countries.length;
 
   return (
     <div>
-      <h2>Пример данных</h2>
-      <pre>{JSON.stringify(keys, null, 2)}</pre>
+      <div>Countries: {countries.length}</div>
+      {slice.map((country) => (
+        <CountryCard key={country.key} country={country} />
+      ))}
+      {canMore && <button onClick={() => setPage((page) => page + 1)}>Load more</button>}
     </div>
   );
 };

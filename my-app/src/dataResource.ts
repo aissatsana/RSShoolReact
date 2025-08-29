@@ -51,9 +51,7 @@ export const dataResource: Resource<Co2Raw> = {
 
   preload() {
     if (this.status === "idle") {
-      try {
-        this.read();
-      } catch (_e) {}
+      this.read();
     }
   },
 
