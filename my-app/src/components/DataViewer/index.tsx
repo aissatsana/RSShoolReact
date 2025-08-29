@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { dataResource } from "../../dataResource";
 import { CountryRows } from "../CountryRows";
-import { buildCountries } from "./utils";
+import { buildCountries, getPopulationForYear } from "./utils";
 import styles from "./DataViewer.module.css";
+import type { SortMode } from "./types";
 
 const DEBOUNCE_TIME = 200;
 
@@ -32,21 +33,66 @@ export const DataViewer = () => {
     return countries.filter((c) => c.name.toLowerCase().includes(debounced));
   }, [countries, debounced]);
 
+  const [sortMode, setSortMode] = useState<SortMode>("population");
+  const sorted = useMemo(() => {
+    const result = [...filtered];
+
+    result.sort((countryA, countryB) => {
+      // сортировка по имени (возрастание или убывание)
+      if (sortMode === "name-asc" || sortMode === "name-desc") {
+        const nameComparison = countryA.name.localeCompare(countryB.name);
+        if (sortMode === "name-asc") {
+          return nameComparison;
+        } else {
+          return -nameComparison;
+        }
+      }
+
+      // sortMode === "year" → сортировка по населению выбранного года
+      const populationA = getPopulationForYear(countryA, year);
+      const populationB = getPopulationForYear(countryB, year);
+
+      const isMissingA = populationA == null;
+      const isMissingB = populationB == null;
+
+      let comparison: number;
+
+      if (isMissingA && isMissingB) {
+        // у обоих нет данных → сортируем по имени
+        comparison = countryA.name.localeCompare(countryB.name);
+      } else if (isMissingA) {
+        comparison = 1;
+      } else if (isMissingB) {
+        comparison = -1;
+      } else {
+        comparison = populationA - populationB;
+      }
+
+      if (comparison === 0) {
+        comparison = countryA.name.localeCompare(countryB.name);
+      }
+
+      return comparison;
+    });
+
+    return result;
+  }, [filtered, sortMode, year]);
+
   const PAGE = 25;
   const [page, setPage] = useState(1);
   useEffect(() => {
     setPage(1);
   }, [debounced, year]);
 
-  const slice = filtered.slice(0, page * PAGE);
-  const canMore = slice.length < filtered.length;
+  const slice = sorted.slice(0, page * PAGE);
+  const canMore = slice.length < sorted.length;
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.controls}>
         <div>Countries: {countries.length}</div>
 
-        <label>
+        <label className={styles.label}>
           <span>Year</span>
           <select value={year ?? ""} onChange={(e) => setYear(e.target.value ? Number(e.target.value) : undefined)}>
             {years.map((year) => (
@@ -54,6 +100,15 @@ export const DataViewer = () => {
                 {year}
               </option>
             ))}
+          </select>
+        </label>
+
+        <label className={styles.label}>
+          <span>Sort</span>
+          <select value={sortMode} onChange={(e) => setSortMode(e.target.value as SortMode)}>
+            <option value="population">Population</option>
+            <option value="name-asc">Name ASC</option>
+            <option value="name-desc">Name DESC</option>
           </select>
         </label>
 
