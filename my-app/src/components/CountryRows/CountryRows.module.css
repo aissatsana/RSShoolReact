@@ -1,0 +1,31 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.active-row {
+  background: #f8fafc;
+  font-weight: 500;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #fff3bf;
+  }
+  60% {
+    background-color: #ffffff;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+.flash {
+  animation: flash 2s ease-out;
+}

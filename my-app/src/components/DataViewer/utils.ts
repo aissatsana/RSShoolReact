@@ -41,3 +41,9 @@ export const buildCountries = (raw: Record<string, unknown>): CountryView[] => {
   }
   return out;
 };
+
+export const getPopulationForYear = (country: CountryView, year?: number) => {
+  if (year == null) return undefined;
+  const row = country.rows.find((row) => row.year === year);
+  return row?.population;
+};
