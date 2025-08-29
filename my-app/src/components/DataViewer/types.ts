@@ -21,4 +21,6 @@ export const isFiniteNumber = (v: unknown): v is number => typeof v === "number"
 
 export const toNumber = (v: unknown): number | undefined => (isFiniteNumber(v) ? v : undefined);
 
-export type SortMode = "population" | "name-asc" | "name-desc";
+export const SORT_MODES = ["population", "name-asc", "name-desc"] as const;
+export type SortMode = (typeof SORT_MODES)[number];
+export const isSortMode = (v: string): v is SortMode => v === "population" || v === "name-asc" || v === "name-desc";

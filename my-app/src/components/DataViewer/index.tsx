@@ -3,7 +3,7 @@ import { dataResource } from "../../dataResource";
 import { CountryRows } from "../CountryRows";
 import { buildCountries, getPopulationForYear } from "./utils";
 import styles from "./DataViewer.module.css";
-import type { SortMode } from "./types";
+import { isSortMode, type SortMode } from "./types";
 
 const DEBOUNCE_TIME = 200;
 
@@ -77,6 +77,12 @@ export const DataViewer = () => {
 
     return result;
   }, [filtered, sortMode, year]);
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    if (isSortMode(value)) {
+      setSortMode(value);
+    }
+  };
 
   const PAGE = 25;
   const [page, setPage] = useState(1);
@@ -105,7 +111,7 @@ export const DataViewer = () => {
 
         <label className={styles.label}>
           <span>Sort</span>
-          <select value={sortMode} onChange={(e) => setSortMode(e.target.value as SortMode)}>
+          <select value={sortMode} onChange={handleSortChange}>
             <option value="population">Population</option>
             <option value="name-asc">Name ASC</option>
             <option value="name-desc">Name DESC</option>
