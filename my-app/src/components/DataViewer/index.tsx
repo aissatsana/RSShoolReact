@@ -4,6 +4,8 @@ import { CountryRows } from "../CountryRows";
 import { buildCountries } from "./utils";
 import styles from "./DataViewer.module.css";
 
+const DEBOUNCE_TIME = 200;
+
 export const DataViewer = () => {
   const raw = dataResource.read();
   const countries = useMemo(() => buildCountries(raw), [raw]);
@@ -13,18 +15,31 @@ export const DataViewer = () => {
     for (const country of countries) for (const row of country.rows) set.add(row.year);
     return Array.from(set).sort((a, b) => a - b);
   }, [countries]);
-
-  const PAGE = 25;
-  const [page, setPage] = useState(1);
   const [year, setYear] = useState<number | undefined>(undefined);
-
-  useEffect(() => setPage(1), [year]);
   useEffect(() => {
     if (!year && years.length) setYear(years[years.length - 1]);
   }, [years, year]);
 
-  const slice = countries.slice(0, page * PAGE);
-  const canMore = slice.length < countries.length;
+  const [query, setQuery] = useState("");
+  const [debounced, setDebounced] = useState(query);
+  useEffect(() => {
+    const timeout = setTimeout(() => setDebounced(query.trim().toLowerCase()), DEBOUNCE_TIME);
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  const filtered = useMemo(() => {
+    if (!debounced) return countries;
+    return countries.filter((c) => c.name.toLowerCase().includes(debounced));
+  }, [countries, debounced]);
+
+  const PAGE = 25;
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [debounced, year]);
+
+  const slice = filtered.slice(0, page * PAGE);
+  const canMore = slice.length < filtered.length;
 
   return (
     <div>
@@ -41,6 +56,8 @@ export const DataViewer = () => {
             ))}
           </select>
         </label>
+
+        <input type="search" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} className={styles.search} />
       </div>
 
       <table className={styles.table}>
@@ -53,8 +70,8 @@ export const DataViewer = () => {
           </tr>
         </thead>
         <tbody>
-          {slice.map((c) => (
-            <CountryRows key={c.key} country={c} displayYear={year} />
+          {slice.map((country) => (
+            <CountryRows key={country.key} country={country} displayYear={year} />
           ))}
         </tbody>
       </table>

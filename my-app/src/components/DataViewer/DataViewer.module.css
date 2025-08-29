@@ -17,3 +17,9 @@
   align-items: center;
   margin-bottom: 12px;
 }
+
+.search {
+  display: flex;
+  min-width: 180px;
+  padding: 8px 10px;
+}
