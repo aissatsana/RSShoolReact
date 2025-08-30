@@ -3,9 +3,9 @@ import { dataResource } from "../../dataResource";
 import { CountryRows } from "../CountryRows";
 import { buildCountries, getPopulationForYear } from "./utils";
 import styles from "./DataViewer.module.css";
-import { isSortMode, type SortMode } from "./types";
-
-const DEBOUNCE_TIME = 200;
+import { isSortMode, type ExtraColumnKey, type SortMode } from "./types";
+import { DEBOUNCE_TIME, EXTRA_COLUMN_LABELS, EXTRA_KEYS } from "./constants";
+import { ColumnsModal } from "../ColumnsModal";
 
 export const DataViewer = () => {
   const raw = dataResource.read();
@@ -38,7 +38,6 @@ export const DataViewer = () => {
     const result = [...filtered];
 
     result.sort((countryA, countryB) => {
-      // сортировка по имени (возрастание или убывание)
       if (sortMode === "name-asc" || sortMode === "name-desc") {
         const nameComparison = countryA.name.localeCompare(countryB.name);
         if (sortMode === "name-asc") {
@@ -48,7 +47,6 @@ export const DataViewer = () => {
         }
       }
 
-      // sortMode === "year" → сортировка по населению выбранного года
       const populationA = getPopulationForYear(countryA, year);
       const populationB = getPopulationForYear(countryB, year);
 
@@ -58,7 +56,6 @@ export const DataViewer = () => {
       let comparison: number;
 
       if (isMissingA && isMissingB) {
-        // у обоих нет данных → сортируем по имени
         comparison = countryA.name.localeCompare(countryB.name);
       } else if (isMissingA) {
         comparison = 1;
@@ -82,6 +79,25 @@ export const DataViewer = () => {
     if (isSortMode(value)) {
       setSortMode(value);
     }
+  };
+
+  const [extraColumns, setExtraColumns] = useState<ExtraColumnKey[]>([]);
+  const [isColumnsModalOpen, setColumnsModalOpen] = useState(false);
+
+  const extraOptions = useMemo(
+    () =>
+      EXTRA_KEYS.map((key) => ({
+        value: key,
+        label: EXTRA_COLUMN_LABELS[key],
+      })),
+    []
+  );
+
+  const handleOpenColumns = () => setColumnsModalOpen(true);
+  const handleCloseColumns = () => setColumnsModalOpen(false);
+  const handleApplyColumns = (next: ExtraColumnKey[]) => {
+    setExtraColumns(next);
+    setColumnsModalOpen(false);
   };
 
   return (
@@ -110,6 +126,10 @@ export const DataViewer = () => {
         </label>
 
         <input type="search" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} className={styles.search} />
+
+        <button type="button" onClick={handleOpenColumns}>
+          Additional columns
+        </button>
       </div>
 
       <table className={styles.table}>
@@ -119,15 +139,20 @@ export const DataViewer = () => {
             <th>Country name</th>
             <th>Population</th>
             <th>CO₂</th>
-            <th>CO₂ per capita</th>
+            <th>CO₂ per capita</th>{" "}
+            {extraColumns.map((key) => (
+              <th key={key}>{EXTRA_COLUMN_LABELS[key]}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {sorted.map((country) => (
-            <CountryRows key={country.key} country={country} displayYear={year} />
+            <CountryRows key={country.key} country={country} displayYear={year} extraColumns={extraColumns} />
           ))}
         </tbody>
       </table>
+
+      {isColumnsModalOpen && <ColumnsModal selected={extraColumns} options={extraOptions} onApply={handleApplyColumns} onClose={handleCloseColumns} />}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import styles from "./CountryRows.module.css";
 import type { CountryRowsProps, Field } from "./types";
 import { FIELDS, FLASH_TIMEOUT, NA } from "./constants";
 
-export const CountryRows = ({ country, displayYear }: CountryRowsProps) => {
+export const CountryRows = ({ country, displayYear, extraColumns = [] }: CountryRowsProps) => {
   const row: YearRow | undefined = useMemo(() => country.rows.find((row) => row.year === displayYear), [country.rows, displayYear]);
   const prevRowRef = useRef<YearRow | undefined>(undefined);
   const [flash, setFlash] = useState<Record<Field, boolean>>({
@@ -55,6 +55,10 @@ export const CountryRows = ({ country, displayYear }: CountryRowsProps) => {
         <td className={flash.population ? styles.flash : ""}>{formatNumber(population)}</td>
         <td className={flash.co2 ? styles.activeRow : ""}>{formatNumber(co2)}</td>
         <td className={flash.co2_per_capita ? styles.activeRow : ""}>{formatNumber(co2PerCapita)}</td>
+        {extraColumns.map((key) => {
+          const value = row?.[key];
+          return <td key={key}>{value != null ? formatNumber(value) : "N/A"}</td>;
+        })}
       </tr>
     </>
   );
